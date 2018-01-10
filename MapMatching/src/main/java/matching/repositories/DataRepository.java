@@ -14,7 +14,10 @@ public class DataRepository {
 
     public Map<Integer, List<GPXEntry>> getAllEntriesAsGPX(String tableName, int limit) throws ClassNotFoundException, SQLException, IOException {
         Connection connection = ConnectionFactory.getConnection();
-        String query = "select taxi_id, date_time, longitude, latitude from " + tableName + " order by date_time limit " + limit;
+
+        String limited = limit > 0 ? "limit " + limit : "";
+        String query = "select taxi_id, date_time, longitude, latitude from " + tableName + " order by date_time " + limited;
+
         PreparedStatement statement = connection.prepareStatement(query);
 
         Map<Integer, List<GPXEntry>> trajectories = new HashMap<>();

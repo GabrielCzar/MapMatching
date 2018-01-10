@@ -10,12 +10,14 @@ import com.graphhopper.routing.util.CarFlagEncoder;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.FastestWeighting;
 import com.graphhopper.routing.weighting.Weighting;
+import com.graphhopper.util.EdgeIteratorState;
 import com.graphhopper.util.GPXEntry;
 import com.graphhopper.util.Parameters;
 import com.graphhopper.util.PointList;
 import com.graphhopper.util.shapes.GHPoint;
 import matching.models.FCDEntry;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,14 +100,24 @@ public class TrajectoryMapMatching {
 
         // Get points of matched track
         Path path = mapMatching.calcPath(mr);
-        PointList points = path.calcPoints();
+        //PointList points = path.calcPoints();
 
-        if (points != null && !points.isEmpty()) {
-            for (GHPoint pt : points) {
+        List<EdgeIteratorState> edges = path.calcEdges();
+        edges.forEach(edge ->
+            edge.fetchWayGeometry(3).forEach(point ->
+                gpxMatched.add(
+                        new FCDEntry(point.getLat(), point.getLon(), 0.0, 0, speed, edge.getEdge())
+                )
+            )
+        );
+
+
+        //if (points != null && !points.isEmpty()) {
+        //    for (GHPoint pt : points) {
                 //System.out.println(pt);
-                gpxMatched.add(new FCDEntry(pt.getLat(), pt.getLon(), 0.0, 0, speed));
-            }
-        }
+        //        gpxMatched.add(new FCDEntry(pt.getLat(), pt.getLon(), 0.0, 0, speed));
+        //    }
+        //}
         return gpxMatched;
     }
 

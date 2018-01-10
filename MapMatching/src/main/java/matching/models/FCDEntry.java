@@ -7,20 +7,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 public class FCDEntry extends GPXEntry {
-    public static final String HEADER = "id,latitude,longitude,date_time";
+    public static final String HEADER = "tid,latitude,longitude,date_time,edge_id";
     private double speed;
+    private int edge_id;
 
     public FCDEntry(GPXEntry e) {
         this(e.lat, e.lon, e.ele, e.getTime(), 0);
-    }
-
-    public FCDEntry(GPXEntry e, int speed) {
-        this(e.lat, e.lon, e.ele, e.getTime(), speed);
-    }
-
-    public FCDEntry(double lat, double lon, long millis, double speed) {
-        super(lat, lon, millis);
-        this.speed = speed;
     }
 
     public FCDEntry(double lat, double lon, double ele, long millis, double speed) {
@@ -28,9 +20,10 @@ public class FCDEntry extends GPXEntry {
         this.speed = speed;
     }
 
-
-    public GPXEntry toGPXEntry() {
-        return new GPXEntry(this.lat, this.lon, this.ele, this.getTime());
+    public FCDEntry(double lat, double lon, double ele, long millis, double speed, int edge_id) {
+        super(lat, lon, ele, millis);
+        this.speed = speed;
+        this.edge_id = edge_id;
     }
 
     /**
@@ -61,6 +54,6 @@ public class FCDEntry extends GPXEntry {
     @Override
     public String toString() {
         LocalDateTime ldt = LocalDateTime.ofInstant(Instant.ofEpochMilli(this.getTime()), ZoneId.of("GMT+8"));
-        return this.lat + ", " + this.lon + ", " + ldt;
+        return this.lat + ", " + this.lon + ", " + ldt + ", " + edge_id;
     }
 }
