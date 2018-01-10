@@ -13,11 +13,9 @@ import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.util.EdgeIteratorState;
 import com.graphhopper.util.GPXEntry;
 import com.graphhopper.util.Parameters;
-import com.graphhopper.util.PointList;
-import com.graphhopper.util.shapes.GHPoint;
 import matching.models.FCDEntry;
 
-import java.awt.*;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,32 +40,6 @@ public class TrajectoryMapMatching {
         algorithmOptions = new AlgorithmOptions(algorithm, weighting);
     }
 
-    public List<GPXEntry> doMatchingAndGetGPXEntries(List<GPXEntry> entries) {
-        MapMatching mapMatching = new MapMatching(hopper, algorithmOptions);
-        mapMatching.setMeasurementErrorSigma(50);
-        MatchResult mr = null;
-        try {
-            mr = mapMatching.doWork(entries);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        List<GPXEntry> gpxMatched = new ArrayList<>();
-
-        //System.out.println("Speed - EdgeMatches -> " + weighting.getFlagEncoder().getSpeed(mr.getEdgeMatches().get(0).getEdgeState().getFlags()));
-        // Get points of matched track
-        Path path = mapMatching.calcPath(mr);
-        PointList points = path.calcPoints();
-
-        if (points != null && !points.isEmpty()) {
-            for (GHPoint pt : points) {
-                //System.out.println(pt);
-                gpxMatched.add(new GPXEntry(pt.getLat(), pt.getLon(), 0.0, 0));
-            }
-        }
-        return gpxMatched;
-    }
-
     public MatchResult doMatching(List<GPXEntry> entries) {
         MapMatching mapMatching = new MapMatching(hopper, algorithmOptions);
         mapMatching.setMeasurementErrorSigma(50);
@@ -84,44 +56,28 @@ public class TrajectoryMapMatching {
 
     public List<FCDEntry> doMatchingAndGetFCDEntries(List<GPXEntry> entries) {
         MapMatching mapMatching = new MapMatching(hopper, algorithmOptions);
-        mapMatching.setMeasurementErrorSigma(50);
-        MatchResult mr = null;
-        try {
-            mr = mapMatching.doWork(entries);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        MatchResult mr = doMatching(entries);
+
         List<FCDEntry> gpxMatched = new ArrayList<>();
 
-        double speed = weighting.getFlagEncoder().getSpeed(mr.getEdgeMatches().get(0).getEdgeState().getFlags());
-
-        //long millis = mr.getMatchMillis();
+        double speed = getSpeed(mr);
 
         // Get points of matched track
         Path path = mapMatching.calcPath(mr);
-        //PointList points = path.calcPoints();
 
         List<EdgeIteratorState> edges = path.calcEdges();
         edges.forEach(edge ->
             edge.fetchWayGeometry(3).forEach(point ->
                 gpxMatched.add(
-                        new FCDEntry(point.getLat(), point.getLon(), 0.0, 0, speed, edge.getEdge())
+                        new FCDEntry(point.getLat(), point.getLon(), 0.0, 0, speed, BigInteger.valueOf(edge.getEdge()))
                 )
             )
         );
 
-
-        //if (points != null && !points.isEmpty()) {
-        //    for (GHPoint pt : points) {
-                //System.out.println(pt);
-        //        gpxMatched.add(new FCDEntry(pt.getLat(), pt.getLon(), 0.0, 0, speed));
-        //    }
-        //}
         return gpxMatched;
     }
 
-    public double getSpeed (long flags) {
-        return weighting.getFlagEncoder().getSpeed(flags);
+    private double getSpeed (MatchResult mr) {
+        return weighting.getFlagEncoder().getSpeed(mr.getEdgeMatches().get(0).getEdgeState().getFlags());
     }
 }

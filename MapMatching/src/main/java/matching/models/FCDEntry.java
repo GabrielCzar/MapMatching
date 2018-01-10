@@ -2,25 +2,22 @@ package matching.models;
 
 import com.graphhopper.util.GPXEntry;
 
+import java.math.BigInteger;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 public class FCDEntry extends GPXEntry {
     public static final String HEADER = "tid,latitude,longitude,date_time,edge_id";
+
     private double speed;
-    private int edge_id;
+    private BigInteger edge_id;
 
     public FCDEntry(GPXEntry e) {
-        this(e.lat, e.lon, e.ele, e.getTime(), 0);
+        this(e.lat, e.lon, e.ele, e.getTime(), 0, BigInteger.valueOf(0));
     }
 
-    public FCDEntry(double lat, double lon, double ele, long millis, double speed) {
-        super(lat, lon, ele, millis);
-        this.speed = speed;
-    }
-
-    public FCDEntry(double lat, double lon, double ele, long millis, double speed, int edge_id) {
+    public FCDEntry(double lat, double lon, double ele, long millis, double speed, BigInteger edge_id) {
         super(lat, lon, ele, millis);
         this.speed = speed;
         this.edge_id = edge_id;
@@ -35,6 +32,14 @@ public class FCDEntry extends GPXEntry {
 
     public void setSpeed(double speed) {
         this.speed = speed;
+    }
+
+    public BigInteger getEdge_id() {
+        return edge_id;
+    }
+
+    public void setEdge_id(BigInteger edge_id) {
+        this.edge_id = edge_id;
     }
 
     @Override

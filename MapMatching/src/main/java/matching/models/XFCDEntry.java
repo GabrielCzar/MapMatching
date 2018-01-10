@@ -4,7 +4,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
-public class GFCDEntry extends FCDEntry{
+public class XFCDEntry extends FCDEntry{
     public static final String HEADER = "tid,latitude,longitude,date_time,edge_id,geometry,offset,gid";
     private static GeometryFactory geoFactory = new GeometryFactory();
 
@@ -12,9 +12,9 @@ public class GFCDEntry extends FCDEntry{
     private double offset;
     private int gid;
 
-    public GFCDEntry(FCDEntry fcdEntry, Integer gid) {
-        super(fcdEntry);
-        this.geometry = calcGeometry(fcdEntry.getLat(), fcdEntry.getLon());
+    public XFCDEntry(FCDEntry e, Integer gid) {
+        super(e.getLat(), e.getLon(), e.ele, e.getTime(), e.getSpeed(), e.getEdge_id());
+        this.geometry = calcGeometry(e.getLat(), e.getLon());
         this.offset = 0;
         this.gid = gid;
     }
@@ -25,6 +25,6 @@ public class GFCDEntry extends FCDEntry{
 
     @Override
     public String toString() {
-        return super.toString() + ", " + geometry + ", " + offset + ", " + gid;
+        return super.toString() + ", " + geometry + ", , " + gid;
     }
 }

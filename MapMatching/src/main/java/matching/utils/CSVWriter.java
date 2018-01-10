@@ -1,7 +1,7 @@
 package matching.utils;
 
 import matching.models.FCDEntry;
-import matching.models.GFCDEntry;
+import matching.models.XFCDEntry;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,8 +27,8 @@ public class CSVWriter {
         }
     }
 
-    public static void writerGFCDEntries(String filename, List<GFCDEntry> points, Integer trajectoryID) {
-        HEADER = GFCDEntry.HEADER;
+    public static void writerGFCDEntries(String filename, List<XFCDEntry> points, Integer trajectoryID) {
+        HEADER = XFCDEntry.HEADER;
         writer(filename, points.stream().map(entry -> formatGFCDEntry(entry, trajectoryID)).collect(Collectors.toList()));
     }
 

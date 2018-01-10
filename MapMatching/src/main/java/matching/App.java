@@ -1,9 +1,8 @@
 package matching;
 
 import com.graphhopper.util.GPXEntry;
-import com.vividsolutions.jts.geom.CoordinateList;
 import matching.models.FCDEntry;
-import matching.models.GFCDEntry;
+import matching.models.XFCDEntry;
 import matching.repositories.DataRepository;
 import matching.services.FCDMatcher;
 import matching.services.TrajectoryMapMatching;
@@ -42,9 +41,9 @@ public class App {
             // Remove gaps in FCD entries
             FCDMatcher.fillInvalidTimesByAvg(fcdEntriesNoGaps);
 
-            // Convert in GFCD entries
-            List<GFCDEntry> gfcdEntries = fcdEntriesNoGaps.stream().map(
-                    fcdEntry -> new GFCDEntry(fcdEntry, fcdEntriesNoGaps.indexOf(fcdEntry))
+            // Convert in XFCD entries
+            List<XFCDEntry> gfcdEntries = fcdEntriesNoGaps.stream().map(
+                    fcdEntry -> new XFCDEntry(fcdEntry, fcdEntriesNoGaps.indexOf(fcdEntry))
             ).collect(Collectors.toList());
 
             // Export to CSV
