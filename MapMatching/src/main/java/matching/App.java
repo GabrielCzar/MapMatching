@@ -3,11 +3,12 @@ package matching;
 import com.graphhopper.util.GPXEntry;
 import matching.models.FCDEntry;
 import matching.models.XFCDEntry;
-import matching.repositories.DataRepository;
+import matching.database.DataRepository;
 import matching.services.FCDMatcher;
 import matching.services.TrajectoryMapMatching;
 import matching.utils.CSVWriter;
 
+import javax.xml.crypto.Data;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -43,11 +44,16 @@ public class App {
 
             // Convert in XFCD entries
             List<XFCDEntry> gfcdEntries = fcdEntriesNoGaps.stream().map(
-                    fcdEntry -> new XFCDEntry(fcdEntry, fcdEntriesNoGaps.indexOf(fcdEntry))
+                    fcdEntry -> new XFCDEntry(fcdEntry, 1L) // with trajectory id
             ).collect(Collectors.toList());
 
+
+            //repository.createTableXFCDEntries();
+
+            repository.saveXFCDEntries(gfcdEntries);
+
             // Export to CSV
-            CSVWriter.writerGFCDEntries(filename, gfcdEntries, 1);
+            //CSVWriter.writerGFCDEntries(filename, gfcdEntries, 1);
 
         } catch (Exception e) {
             e.printStackTrace();

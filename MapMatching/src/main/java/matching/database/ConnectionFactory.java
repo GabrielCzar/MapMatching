@@ -1,4 +1,4 @@
-package matching.repositories;
+package matching.database;
 
 import java.io.IOException;
 import java.sql.Connection;
