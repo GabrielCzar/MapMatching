@@ -42,6 +42,7 @@ public class App {
             // Remove gaps in FCD entries
             FCDMatcher.fillInvalidTimesByAvg(fcdEntriesNoGaps);
 
+
             // Convert in XFCD entries
             List<XFCDEntry> gfcdEntries = fcdEntriesNoGaps.stream().map(
                     fcdEntry -> new XFCDEntry(fcdEntry, 1L) // with trajectory id
@@ -49,8 +50,9 @@ public class App {
 
 
             //repository.createTableXFCDEntries();
-
+            System.out.println("Save in database...");
             repository.saveXFCDEntries(gfcdEntries);
+            System.out.println("Saved!");
 
             // Export to CSV
             //CSVWriter.writerGFCDEntries(filename, gfcdEntries, 1);

@@ -279,7 +279,7 @@ public class FCDMatcher {
         // first value
         if (values.get(0).getTime() <= 0) {
             values.get(0).setTime(
-                    values.get(1).getTime() - 1
+                    values.get(1).getTime() + 1
             );
         }
 
@@ -288,7 +288,7 @@ public class FCDMatcher {
             if (values.get(i).getTime() <= 0) {
                 time1 = values.get(i + 1).getTime();
                 time2 = values.get(i - 1).getTime();
-                avg = (time2 - time1) / 2;
+                avg = time1 == time2 ? time1 : (time2 - time1) / 2;
                 values.get(i).setTime(time1 + avg);
             }
         }
