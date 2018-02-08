@@ -1,20 +1,19 @@
 package matching;
 
 import com.graphhopper.util.GPXEntry;
-import matching.models.FCDEntry;
-import matching.models.XFCDEntry;
+import matching.models.FDEntry;
+import matching.models.XFDEntry;
 import matching.database.DataRepository;
-import matching.services.FCDMatcher;
-import matching.services.TrajectoryMapMatching;
-import matching.utils.CSVWriter;
+import matching.services.FDMatcher;
+import matching.services.GraphHopperMapMatching;
 
-import javax.xml.crypto.Data;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class App {
-    private static final String TABLE = "taxi_data",
+    private static final String
+            TABLE = "taxi_data",
             OSM_FILE_PATH = "Beijing.osm.pbf",
             GHLOCATION = "graphopper-beijing",
             filename = "fcd-entries.csv";
@@ -25,37 +24,36 @@ public class App {
             int limit = -1;
             Map<Integer, List<GPXEntry>> gpxEntries = repository.getAllEntriesAsGPX(TABLE, limit);
 
-            TrajectoryMapMatching mapMatching = new TrajectoryMapMatching(OSM_FILE_PATH, GHLOCATION);
+            GraphHopperMapMatching mapMatching = new GraphHopperMapMatching(OSM_FILE_PATH, GHLOCATION);
 
             // Match in GPX entries
             List<GPXEntry> gpxUnmatched = gpxEntries.get(1);
 
-            // Convert GPX entries in FCD entries
-            List<FCDEntry> fcdUnmatched = FCDMatcher.convertGPXEntryInFCDEntry(gpxUnmatched);
-            List<FCDEntry> fcdMatched = mapMatching.doMatchingAndGetFCDEntries(gpxUnmatched);
+            // Convert GPX entries in FD entries
+            List<FDEntry> fdUnmatched = FDMatcher.convertGPXEntryInFCDEntry(gpxUnmatched);
+            List<FDEntry> fdMatched = mapMatching.doMatchingAndGetFCDEntries(gpxUnmatched);
 
-            // Rematch FCD entries
-            List<FCDEntry> fcdMatch = FCDMatcher.doFCDMatching(fcdUnmatched, fcdMatched);
+            // Rematch FD entries
+            List<FDEntry> fdMatch = FDMatcher.doFCDMatching(fdUnmatched, fdMatched);
 
-            List<FCDEntry> fcdEntriesNoGaps = FCDMatcher.fillGaps(fcdMatch);
+            List<FDEntry> fdEntriesNoGaps = FDMatcher.fillGaps(fdMatch);
 
-            // Remove gaps in FCD entries
-            FCDMatcher.fillInvalidTimesByAvg(fcdEntriesNoGaps);
+            // Remove gaps in FD entries
+            FDMatcher.fillInvalidTimes(fdEntriesNoGaps, 2);
 
-
-            // Convert in XFCD entries
-            List<XFCDEntry> gfcdEntries = fcdEntriesNoGaps.stream().map(
-                    fcdEntry -> new XFCDEntry(fcdEntry, 1L) // with trajectory id
+            // Convert in XFD entries
+            List<XFDEntry> gfdEntries = fdEntriesNoGaps.stream().map(
+                    fdEntry -> new XFDEntry(fdEntry, 1L) // with trajectory id
             ).collect(Collectors.toList());
 
 
             //repository.createTableXFCDEntries();
-            System.out.println("Save in database...");
-            repository.saveXFCDEntries(gfcdEntries);
+            System.out.println("Trying save in database...");
+            repository.saveXFCDEntries(gfdEntries);
             System.out.println("Saved!");
 
             // Export to CSV
-            //CSVWriter.writerGFCDEntries(filename, gfcdEntries, 1);
+            //CSVWriter.writerGFCDEntries(filename, gfdEntries, 1);
 
         } catch (Exception e) {
             e.printStackTrace();

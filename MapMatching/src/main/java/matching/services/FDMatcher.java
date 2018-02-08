@@ -3,7 +3,7 @@ package matching.services;
 import com.graphhopper.util.DistanceCalc;
 import com.graphhopper.util.DistancePlaneProjection;
 import com.graphhopper.util.GPXEntry;
-import matching.models.FCDEntry;
+import matching.models.FDEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,17 +15,17 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
 
-public class FCDMatcher {
+public class FDMatcher {
 
-    public static List<FCDEntry> doFCDMatching(List<FCDEntry> fcdUnmatched, List<FCDEntry> fcdMatched) {
+    public static List<FDEntry> doFCDMatching(List<FDEntry> fcdUnmatched, List<FDEntry> fcdMatched) {
         // init list for query nodes (outer loop)
         ConcurrentSkipListSet<Integer> queryNodes = new ConcurrentSkipListSet<>();
         // init and fill hash map for matching candidates per inner node (inner loop)
         ConcurrentHashMap<Integer, ConcurrentSkipListMap<Double, Integer>> candidateNodes = new ConcurrentHashMap<>();
 
         DistanceCalc distanceCalc = new DistancePlaneProjection();
-        List<FCDEntry> outerLoop = null;
-        List<FCDEntry> innerLoop = null;
+        List<FDEntry> outerLoop = null;
+        List<FDEntry> innerLoop = null;
 
         // choose smaller point list as outer loop
         if (fcdUnmatched.size() < fcdMatched.size()) {
@@ -42,7 +42,7 @@ public class FCDMatcher {
 
         // loop over smaller point list
         for (int i=0;i<outerLoop.size();i++) {
-            FCDEntry outerNode = outerLoop.get(i);
+            FDEntry outerNode = outerLoop.get(i);
 
             // parameters to approach closest node
             double checkDistance = 50.0;
@@ -51,7 +51,7 @@ public class FCDMatcher {
 
             // loop over greater point list
             for (int j=0;j<innerLoop.size();j++) {
-                FCDEntry innerNode = innerLoop.get(j);
+                FDEntry innerNode = innerLoop.get(j);
 
                 // calculate the distance
                 double distance = distanceCalc.calcDist(
@@ -153,18 +153,18 @@ public class FCDMatcher {
         return fcdMatched;
     }
 
-    public static List<FCDEntry> fillGaps(List<FCDEntry> fcdWithGaps) {
+    public static List<FDEntry> fillGaps(List<FDEntry> fcdWithGaps) {
 
-        List<FCDEntry> fcdWithoutGaps = new ArrayList<>();
-        List<FCDEntry> gap = new ArrayList<>();
+        List<FDEntry> fcdWithoutGaps = new ArrayList<>();
+        List<FDEntry> gap = new ArrayList<>();
 
         for (int i = 0; i < fcdWithGaps.size(); i++) {
-            FCDEntry fcdEntry = fcdWithGaps.get(i);
+            FDEntry FDEntry = fcdWithGaps.get(i);
             // extend the gap
-            gap.add(fcdEntry);
+            gap.add(FDEntry);
 
             // if entry has no time set continue with loop
-            if (fcdEntry.getTime() <= 0)
+            if (FDEntry.getTime() <= 0)
                 continue;
             else {
                 // fill the gap if it contains more than one value (must contain zeros then)
@@ -172,9 +172,9 @@ public class FCDMatcher {
                     fillGap(gap, fcdWithoutGaps);
                 // start new gap
                 gap.clear();
-                gap.add(fcdEntry);
+                gap.add(FDEntry);
                 // add entry to result list
-                fcdWithoutGaps.add(fcdEntry);
+                fcdWithoutGaps.add(FDEntry);
             }
         }
 
@@ -185,7 +185,7 @@ public class FCDMatcher {
         return fcdWithoutGaps;
     }
 
-    private static void fillGap(List<FCDEntry> gap, List<FCDEntry> fcdWithoutGaps) {
+    private static void fillGap(List<FDEntry> gap, List<FDEntry> fcdWithoutGaps) {
 
         DistanceCalc distanceCalc = new DistancePlaneProjection();
         double distance = 0.0;
@@ -234,9 +234,8 @@ public class FCDMatcher {
             }
         }
     }
-    // Por que ao inves de pegar somente a distancia entre dois pontos consecutivos e dividir pela velocidade
-    // é utilizado a distancia acumulada ate akele ponto e dividi pela velocidade do ponto ???????
-    public static void fillInvalidTimes (List<FCDEntry> values) {
+
+    public static void _fillInvalidTimes (List<FDEntry> values) {
         System.out.println("INVALID --> " + values.get(0).getSpeed());
         DistanceCalc distanceCalc = new DistancePlaneProjection();
         double distance;
@@ -273,36 +272,62 @@ public class FCDMatcher {
         System.out.println("FINISH INVALID TIME CORRECTED!");
     }
 
-    public static void fillInvalidTimesByAvg(List<FCDEntry> values) {
-        long time1, time2, avg;
+    /**
+     * If exists invalid times or negative timestamps, they are to be replaced for next valid value
+     * */
+    public static void removeNegativeTimes(List<FDEntry> values) {
+        long time1, time2;
 
         // first value
-        if (values.get(0).getTime() <= 0) {
-            values.get(0).setTime(
-                    values.get(1).getTime() + 1
-            );
-        }
+        if (values.get(0).getTime() <= 0)
+            values.get(0).setTime(values.get(1).getTime());
 
         // only values of middle
         for (int i = 1; i < values.size() - 2; i++) {
             if (values.get(i).getTime() <= 0) {
                 time1 = values.get(i + 1).getTime();
                 time2 = values.get(i - 1).getTime();
-                avg = time1 == time2 ? time1 : (time2 - time1) / 2;
-                values.get(i).setTime(time1 + avg);
+                long value = time1 > 0 ? time1 : time2;
+                values.get(i).setTime(value);
             }
         }
 
         // last value
-        if (values.get(values.size() - 1).getTime() <= 0) {
-            values.get(values.size() - 1).setTime(
-                    values.get(values.size() - 2).getTime() + 1
-            );
-        }
+        if (values.get(values.size() - 1).getTime() <= 0)
+            values.get(values.size() - 1).setTime(values.get(values.size() - 2).getTime());
+
     }
 
-    public static List<FCDEntry> convertGPXEntryInFCDEntry (List<GPXEntry> gpxEntries) {
-        return gpxEntries.stream().map(gpxEntry -> new FCDEntry(gpxEntry)).collect(Collectors.toList());
+    /**
+     * @param values: FD entries with invalid timestamps
+     * @param diff: Time interval from gps utilized for save each position (minutes)
+     * */
+    public static void fillInvalidTimes (List<FDEntry> values, long diff) {
+        removeNegativeTimes(values);
+
+        DistanceCalc distanceCalc = new DistancePlaneProjection();
+        double distance = 0.0;
+        List<Double> accumulateDistance = new ArrayList<>();
+
+        // start accumulative sum with 0.0
+        accumulateDistance.add(distance);
+
+        // get the length of the the gap
+        for (int i = 1; i < values.size(); i++) {
+            distance += distanceCalc.calcDist(
+                    values.get(i - 1).lat,
+                    values.get(i - 1).lon,
+                    values.get(i).lat,
+                    values.get(i).lon
+            );
+            accumulateDistance.add(distance);
+        }
+
+
+    }
+
+        public static List<FDEntry> convertGPXEntryInFCDEntry (List<GPXEntry> gpxEntries) {
+        return gpxEntries.stream().map(gpxEntry -> new FDEntry(gpxEntry)).collect(Collectors.toList());
     }
 
 }

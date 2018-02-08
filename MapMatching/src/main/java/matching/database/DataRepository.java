@@ -2,7 +2,7 @@ package matching.database;
 
 import com.graphhopper.util.GPXEntry;
 import com.graphhopper.util.shapes.GHPoint;
-import matching.models.XFCDEntry;
+import matching.models.XFDEntry;
 
 import java.io.IOException;
 import java.sql.*;
@@ -114,11 +114,11 @@ public class DataRepository {
         }
     }
 
-    public void saveXFCDEntries (List<XFCDEntry> entries) {
+    public void saveXFCDEntries (List<XFDEntry> entries) {
         entries.forEach(entry -> saveXFCDEntry(entry));
     }
 
-    public void saveXFCDEntry(XFCDEntry entry) {
+    public void saveXFCDEntry(XFDEntry entry) {
         Connection connection = null;
         try {
             connection = ConnectionFactory.getConnection();
@@ -137,7 +137,7 @@ public class DataRepository {
             stmt.setDouble(2, entry.getLat());
             stmt.setDouble(3, entry.getLon());
             stmt.setTimestamp(4, entry.getTimestamp());
-            stmt.setLong(5, entry.getEdge_id().longValue());
+            stmt.setLong(5, entry.getEdgeId().longValue());
             //GEOMETRY
             stmt.setDouble(6, entry.getGeometry().getCentroid().getX()); // Longitude
             stmt.setDouble(7, entry.getGeometry().getCentroid().getY()); // Latitude

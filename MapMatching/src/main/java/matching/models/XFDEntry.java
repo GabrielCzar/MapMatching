@@ -6,7 +6,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 
 import java.sql.Timestamp;
 
-public class XFCDEntry extends FCDEntry{
+public class XFDEntry extends FDEntry {
     public static final String HEADER = "tid,latitude,longitude,date_time,edge_id,geometry,offset,gid";
     private static GeometryFactory geoFactory = new GeometryFactory();
 
@@ -15,15 +15,15 @@ public class XFCDEntry extends FCDEntry{
     private double offset;
     private int gid;
 
-    public XFCDEntry(FCDEntry e, Integer gid) {
-        super(e.getLat(), e.getLon(), e.ele, e.getTime(), e.getSpeed(), e.getEdge_id());
+    public XFDEntry(FDEntry e, Integer gid) {
+        super(e.getLat(), e.getLon(), e.ele, e.getTime(), e.getSpeed(), e.getEdgeId());
         this.geometry = calcGeometry(e.getLat(), e.getLon());
         this.offset = 0;
         this.gid = gid;
     }
 
-    public XFCDEntry(FCDEntry e, Long tid) {
-        super(e.getLat(), e.getLon(), e.ele, e.getTime(), e.getSpeed(), e.getEdge_id());
+    public XFDEntry(FDEntry e, Long tid) {
+        super(e.getLat(), e.getLon(), e.ele, e.getTime(), e.getSpeed(), e.getEdgeId());
         this.geometry = calcGeometry(e.getLat(), e.getLon());
         this.offset = 0;
         this.tid = tid;

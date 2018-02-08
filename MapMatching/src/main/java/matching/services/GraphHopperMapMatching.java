@@ -13,20 +13,20 @@ import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.util.EdgeIteratorState;
 import com.graphhopper.util.GPXEntry;
 import com.graphhopper.util.Parameters;
-import matching.models.FCDEntry;
+import matching.models.FDEntry;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrajectoryMapMatching {
+public class GraphHopperMapMatching {
     private final String algorithm = Parameters.Algorithms.DIJKSTRA_BI;
     private AlgorithmOptions algorithmOptions;
     private CarFlagEncoder encoder;
     private Weighting weighting;
     private GraphHopper hopper;
 
-    public TrajectoryMapMatching(String osmFilePath, String graphHopperLocation) {
+    public GraphHopperMapMatching(String osmFilePath, String graphHopperLocation) {
         hopper = new GraphHopperOSM();
         //hopper = new GraphHopper();
         hopper.setDataReaderFile(osmFilePath);
@@ -54,11 +54,11 @@ public class TrajectoryMapMatching {
     }
 
 
-    public List<FCDEntry> doMatchingAndGetFCDEntries(List<GPXEntry> entries) {
+    public List<FDEntry> doMatchingAndGetFCDEntries(List<GPXEntry> entries) {
         MapMatching mapMatching = new MapMatching(hopper, algorithmOptions);
         MatchResult mr = doMatching(entries);
 
-        List<FCDEntry> gpxMatched = new ArrayList<>();
+        List<FDEntry> gpxMatched = new ArrayList<>();
 
         double speed = getSpeed(mr);
 
@@ -69,7 +69,7 @@ public class TrajectoryMapMatching {
         edges.forEach(edge ->
             edge.fetchWayGeometry(3).forEach(point ->
                 gpxMatched.add(
-                        new FCDEntry(point.getLat(), point.getLon(), 0.0, 0, speed, BigInteger.valueOf(edge.getEdge()))
+                        new FDEntry(point.getLat(), point.getLon(), 0.0, 0, speed, BigInteger.valueOf(edge.getEdge()))
                 )
             )
         );
