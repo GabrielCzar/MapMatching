@@ -1,11 +1,13 @@
 package matching;
 
 import com.graphhopper.util.GPXEntry;
+import matching.database.DataRepository;
 import matching.models.FDEntry;
 import matching.models.XFDEntry;
-import matching.database.DataRepository;
 import matching.services.FDMatcher;
 import matching.services.GraphHopperMapMatching;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +20,11 @@ public class App {
             GHLOCATION = "graphopper-beijing",
             filename = "fcd-entries.csv";
 
+    public static final Logger logger = LoggerFactory.getLogger(App.class);
+
     public static void main(String[] args) {
+        logger.info("Init");
+
         DataRepository repository = new DataRepository();
         try {
             int limit = -1;
@@ -39,7 +45,7 @@ public class App {
             List<FDEntry> fdEntriesNoGaps = FDMatcher.fillGaps(fdMatch);
 
             // Remove gaps in FD entries
-            FDMatcher.fillInvalidTimes(fdEntriesNoGaps, 2);
+            FDMatcher.fillInvalidTimes(fdEntriesNoGaps, 120, mapMatching);
 
             // Convert in XFD entries
             List<XFDEntry> gfdEntries = fdEntriesNoGaps.stream().map(
@@ -48,9 +54,9 @@ public class App {
 
 
             //repository.createTableXFCDEntries();
-            System.out.println("Trying save in database...");
+            logger.info("Trying save in database...");
             repository.saveXFCDEntries(gfdEntries);
-            System.out.println("Saved!");
+            logger.info("Saved!");
 
             // Export to CSV
             //CSVWriter.writerGFCDEntries(filename, gfdEntries, 1);
@@ -58,6 +64,7 @@ public class App {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
 }

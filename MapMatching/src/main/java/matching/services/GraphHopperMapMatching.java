@@ -1,5 +1,7 @@
 package matching.services;
 
+import com.graphhopper.GHRequest;
+import com.graphhopper.GHResponse;
 import com.graphhopper.GraphHopper;
 import com.graphhopper.matching.MapMatching;
 import com.graphhopper.matching.MatchResult;
@@ -53,7 +55,6 @@ public class GraphHopperMapMatching {
         return mr;
     }
 
-
     public List<FDEntry> doMatchingAndGetFCDEntries(List<GPXEntry> entries) {
         MapMatching mapMatching = new MapMatching(hopper, algorithmOptions);
         MatchResult mr = doMatching(entries);
@@ -61,17 +62,16 @@ public class GraphHopperMapMatching {
         List<FDEntry> gpxMatched = new ArrayList<>();
 
         double speed = getSpeed(mr);
-
         // Get points of matched track
         Path path = mapMatching.calcPath(mr);
 
         List<EdgeIteratorState> edges = path.calcEdges();
         edges.forEach(edge ->
-            edge.fetchWayGeometry(3).forEach(point ->
-                gpxMatched.add(
-                        new FDEntry(point.getLat(), point.getLon(), 0.0, 0, speed, BigInteger.valueOf(edge.getEdge()))
+                edge.fetchWayGeometry(3).forEach(point ->
+                        gpxMatched.add(
+                                new FDEntry(point.getLat(), point.getLon(), 0.0, 0, speed, BigInteger.valueOf(edge.getEdge()))
+                        )
                 )
-            )
         );
 
         return gpxMatched;
@@ -79,5 +79,10 @@ public class GraphHopperMapMatching {
 
     private double getSpeed (MatchResult mr) {
         return weighting.getFlagEncoder().getSpeed(mr.getEdgeMatches().get(0).getEdgeState().getFlags());
+    }
+
+    public GHResponse calcDistance(GHRequest request) {
+        request.setVehicle("car");
+        return hopper.route(request);
     }
 }

@@ -14,8 +14,6 @@
     <orderEntry type="library" name="Maven: org.postgresql:postgresql:42.1.4" level="project" />
     <orderEntry type="library" name="Maven: com.graphhopper:graphhopper-map-matching-core:0.9.0" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.7" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.7.7" level="project" />
-    <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
     <orderEntry type="library" name="Maven: com.graphhopper.external:hmm-lib:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.graphhopper:graphhopper-reader-osm:0.10.alpha3" level="project" />
     <orderEntry type="library" name="Maven: com.graphhopper:graphhopper-core:0.10.alpha3" level="project" />
@@ -41,5 +39,7 @@
     <orderEntry type="library" name="Maven: jgridshift:jgridshift:1.0" level="project" />
     <orderEntry type="library" name="Maven: net.sf.geographiclib:GeographicLib-Java:1.44" level="project" />
     <orderEntry type="library" name="Maven: org.jdom:jdom:1.1.3" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.2.3" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.2.3" level="project" />
   </component>
 </module>

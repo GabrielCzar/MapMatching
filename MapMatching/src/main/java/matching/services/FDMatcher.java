@@ -1,9 +1,15 @@
 package matching.services;
 
+import com.graphhopper.GHRequest;
+import com.graphhopper.GHResponse;
+import com.graphhopper.PathWrapper;
 import com.graphhopper.util.DistanceCalc;
 import com.graphhopper.util.DistancePlaneProjection;
 import com.graphhopper.util.GPXEntry;
+import matching.App;
 import matching.models.FDEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +22,8 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
 
 public class FDMatcher {
+
+    //private static final Logger logger = LoggerFactory.getLogger(App.class);
 
     public static List<FDEntry> doFCDMatching(List<FDEntry> fcdUnmatched, List<FDEntry> fcdMatched) {
         // init list for query nodes (outer loop)
@@ -296,37 +304,113 @@ public class FDMatcher {
         if (values.get(values.size() - 1).getTime() <= 0)
             values.get(values.size() - 1).setTime(values.get(values.size() - 2).getTime());
 
+        App.logger.info("Remove negative times finish!");
     }
 
     /**
      * @param values: FD entries with invalid timestamps
-     * @param diff: Time interval from gps utilized for save each position (minutes)
+     * @param diff: Time interval from gps utilized for save each position (seconds)
      * */
-    public static void fillInvalidTimes (List<FDEntry> values, long diff) {
-        removeNegativeTimes(values);
+    public static void fillInvalidTimes (List<FDEntry> values, long diff, GraphHopperMapMatching matching) {
+        removeNegativeTimes(values); // Optimize later
 
-        DistanceCalc distanceCalc = new DistancePlaneProjection();
-        double distance = 0.0;
         List<Double> accumulateDistance = new ArrayList<>();
+        double distance = 0.0;
+        int initPos = 0, i = 0, j = 0;
+        long initialTime = values.get(0).getTime();
 
-        // start accumulative sum with 0.0
-        accumulateDistance.add(distance);
+        for (;i < values.size(); i++) {
+            accumulateDistance = new ArrayList<>();
+            initialTime = values.get(i).getTime();
+            distance = 0.0;
+            initPos = i;
 
-        // get the length of the the gap
-        for (int i = 1; i < values.size(); i++) {
-            distance += distanceCalc.calcDist(
-                    values.get(i - 1).lat,
-                    values.get(i - 1).lon,
-                    values.get(i).lat,
-                    values.get(i).lon
-            );
+            // start accumulative sum with 0.0
             accumulateDistance.add(distance);
+
+            for (j = i + 1; j < values.size(); j++) {
+                // Difference in seconds
+                long duration = (values.get(j).getTime() - values.get(j - 1).getTime()) / 1000;
+
+                if (duration >= diff) {
+
+                    App.logger.info(values.get(j).toString());
+
+                    long finalTime = values.get(j).getTime();
+
+                    try {
+                        distance += matching
+                                .calcDistance(
+                                        new GHRequest(
+                                                values.get(j - 1).lat,
+                                                values.get(j - 1).lon,
+                                                values.get(j).lat,
+                                                values.get(j).lon))
+                                .getBest()
+                                .getDistance();
+                    } catch (RuntimeException e) {
+                        App.logger.info("the best response not found");
+                    }
+
+                    double vm = distance / ((finalTime - initialTime) / 1000);
+
+                    App.logger.info("Speed" + values.get(j).getSpeed() + "Vm - " + vm + " | distance - " + distance);
+
+                    int finalPos = j;
+
+                    // call method for alter the times
+                    for (int k = initPos + 1; k < finalPos; k++) {
+
+                        distance = accumulateDistance.get(k - (initPos + 1));
+
+                        long newTime = (long) ((distance / vm) * 1000);
+
+                        values.get(k).setTime(values.get(k - 1).getTime() + newTime);
+                    }
+
+                    // Change i for next sequence
+                    i = j;
+                    break;
+                }
+
+                try {
+                    distance += matching
+                            .calcDistance(
+                                    new GHRequest(
+                                        values.get(j - 1).lat,
+                                        values.get(j - 1).lon,
+                                        values.get(j).lat,
+                                        values.get(j).lon))
+                            .getBest()
+                            .getDistance();
+                } catch (RuntimeException e) {
+                    distance += 0;
+                }
+
+                accumulateDistance.add(distance);
+            }
+
         }
 
+        long finalTime = values.get(j - 1).getTime();
 
+        double vm = distance / ((finalTime - initialTime) / 1000);
+
+        int finalPos = j - 1;
+
+        // call method for alter the times
+        for (int k = initPos + 1; k < finalPos; k++) {
+
+            distance = accumulateDistance.get(k - (initPos + 1));
+
+            long newTime = (long) ((distance / vm) * 1000);
+
+            values.get(k).setTime(values.get(k - 1).getTime() + newTime);
+        }
+        App.logger.info("Invalid times finish!");
     }
 
-        public static List<FDEntry> convertGPXEntryInFCDEntry (List<GPXEntry> gpxEntries) {
+    public static List<FDEntry> convertGPXEntryInFCDEntry (List<GPXEntry> gpxEntries) {
         return gpxEntries.stream().map(gpxEntry -> new FDEntry(gpxEntry)).collect(Collectors.toList());
     }
 
