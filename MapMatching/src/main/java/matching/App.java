@@ -47,16 +47,22 @@ public class App {
             // Remove gaps in FD entries
             FDMatcher.fillInvalidTimes(fdEntriesNoGaps, 120, mapMatching);
 
+            logger.info("-------- ENTRIES -------");
+
             // Convert in XFD entries
-            List<XFDEntry> gfdEntries = fdEntriesNoGaps.stream().map(
-                    fdEntry -> new XFDEntry(fdEntry, 1L) // with trajectory id
-            ).collect(Collectors.toList());
+            //List<XFDEntry> gfdEntries = fdEntriesNoGaps.stream().map(
+            //        fdEntry -> {
+            //            logger.info(fdEntry.toString());
+            //            return new XFDEntry(fdEntry, 1L); // with trajectory id
+            //        }
+            //).collect(Collectors.toList());
+
 
 
             //repository.createTableXFCDEntries();
-            logger.info("Trying save in database...");
-            repository.saveXFCDEntries(gfdEntries);
-            logger.info("Saved!");
+            //logger.info("Trying save in database...");
+            //repository.saveXFCDEntries(gfdEntries);
+            //logger.info("Saved!");
 
             // Export to CSV
             //CSVWriter.writerGFCDEntries(filename, gfdEntries, 1);

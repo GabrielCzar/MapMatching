@@ -3,6 +3,7 @@ package matching.services;
 import com.graphhopper.GHRequest;
 import com.graphhopper.GHResponse;
 import com.graphhopper.GraphHopper;
+import com.graphhopper.matching.EdgeMatch;
 import com.graphhopper.matching.MapMatching;
 import com.graphhopper.matching.MatchResult;
 import com.graphhopper.reader.osm.GraphHopperOSM;
@@ -61,15 +62,15 @@ public class GraphHopperMapMatching {
 
         List<FDEntry> gpxMatched = new ArrayList<>();
 
-        double speed = getSpeed(mr);
         // Get points of matched track
         Path path = mapMatching.calcPath(mr);
 
         List<EdgeIteratorState> edges = path.calcEdges();
         edges.forEach(edge ->
-                edge.fetchWayGeometry(3).forEach(point ->
+                // 2 don't include towers node
+                edge.fetchWayGeometry(2).forEach(point ->
                         gpxMatched.add(
-                                new FDEntry(point.getLat(), point.getLon(), 0.0, 0, speed, BigInteger.valueOf(edge.getEdge()))
+                                new FDEntry(point.getLat(), point.getLon(), 0.0, 0, getSpeed(edge.getFlags()), BigInteger.valueOf(edge.getEdge()))
                         )
                 )
         );
@@ -77,8 +78,8 @@ public class GraphHopperMapMatching {
         return gpxMatched;
     }
 
-    private double getSpeed (MatchResult mr) {
-        return weighting.getFlagEncoder().getSpeed(mr.getEdgeMatches().get(0).getEdgeState().getFlags());
+    private double getSpeed (long flags) {
+        return weighting.getFlagEncoder().getSpeed(flags);
     }
 
     public GHResponse calcDistance(GHRequest request) {

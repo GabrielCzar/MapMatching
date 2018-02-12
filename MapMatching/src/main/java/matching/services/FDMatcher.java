@@ -311,7 +311,7 @@ public class FDMatcher {
      * @param values: FD entries with invalid timestamps
      * @param diff: Time interval from gps utilized for save each position (seconds)
      * */
-    public static void fillInvalidTimes (List<FDEntry> values, long diff, GraphHopperMapMatching matching) {
+    public static void __fillInvalidTimes (List<FDEntry> values, long diff, GraphHopperMapMatching matching) {
         removeNegativeTimes(values); // Optimize later
 
         List<Double> accumulateDistance = new ArrayList<>();
@@ -408,6 +408,50 @@ public class FDMatcher {
             values.get(k).setTime(values.get(k - 1).getTime() + newTime);
         }
         App.logger.info("Invalid times finish!");
+    }
+
+    public static void fillInvalidTimes (List<FDEntry> values, long diff, GraphHopperMapMatching matching) {
+        removeNegativeTimes(values); // Optimize later
+
+        DistanceCalc distanceCalc = new DistancePlaneProjection();
+        List<Double> accumulateDistance = new ArrayList<>();
+        double distance = 0.0;
+        int initPos = 0;
+        long initialTime = values.get(0).getTime();
+        long finalTime = values.get(12).getTime();
+
+        accumulateDistance.add(distance);
+        for (int i = 0; i < 12; i++) {
+            // Show actual position
+            App.logger.info("--- OLDER ---");
+            App.logger.info(values.get(i).toString());
+
+            distance += distanceCalc.calcDist(
+                    values.get(i).getLat(),
+                    values.get(i).getLon(),
+                    values.get(i + 1).getLat(),
+                    values.get(i + 1).getLon()
+            );
+
+            accumulateDistance.add(distance);
+        }
+
+        App.logger.info("DistTOTAL -- " + distance);
+
+        double vm = distance / ((finalTime - initialTime) / 1000);
+
+        App.logger.info("VM -- " + vm);
+
+        for (int i = 1; i < 11; i++) {
+            long add = (long) ((accumulateDistance.get(i) / vm) * 1000);
+            values.get(i).setTime(initialTime + add);
+        }
+
+        for (int i = 0; i < 12; i++) {
+            App.logger.info("--- NEW ---");
+            App.logger.info(values.get(i).toString());
+        }
+
     }
 
     public static List<FDEntry> convertGPXEntryInFCDEntry (List<GPXEntry> gpxEntries) {

@@ -17,7 +17,9 @@ public class DataRepository {
         Connection connection = ConnectionFactory.getConnection();
 
         String limited = limit > 0 ? "limit " + limit : "";
-        String query = "select taxi_id, date_time, longitude, latitude from " + tableName + " order by date_time " + limited;
+        String query = "select taxi_id, date_time, longitude, latitude from " + tableName
+                + " WHERE date_time::date >= DATE '2008-02-02' AND date_time::date < DATE '2008-02-03' "
+                + " order by date_time " + limited;
 
         PreparedStatement statement = connection.prepareStatement(query);
 

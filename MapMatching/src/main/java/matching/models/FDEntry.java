@@ -58,7 +58,7 @@ public class FDEntry extends GPXEntry {
 
     @Override
     public String toString() {
-        LocalDateTime ldt = LocalDateTime.ofInstant(Instant.ofEpochMilli(this.getTime()), ZoneId.of("GMT+8"));
+        LocalDateTime ldt = LocalDateTime.ofInstant(Instant.ofEpochMilli(this.getTime()), ZoneId.of("GMT-3"));
         return this.lat + ", " + this.lon + ", " + ldt + ", " + edgeId;
     }
 }
