@@ -32,10 +32,10 @@
   <mapcanvas>
     <units>degrees</units>
     <extent>
-      <xmin>116.50775134956083434</xmin>
-      <ymin>39.92042630528974456</ymin>
-      <xmax>116.51753486787518455</xmax>
-      <ymax>39.92588437588629091</ymax>
+      <xmin>116.5302182913189597</xmin>
+      <ymin>39.84912964787295664</ymin>
+      <xmax>116.68675458434856296</xmax>
+      <ymax>39.93645877741769823</ymax>
     </extent>
     <rotation>0</rotation>
     <projections>0</projections>
@@ -1217,17 +1217,18 @@
       <SingleCategoryDiagramRenderer diagramType="Pie">
         <DiagramCategory penColor="#000000" labelPlacementMethod="XHeight" penWidth="0" diagramOrientation="Up" minimumSize="0" barWidth="5" penAlpha="255" maxScaleDenominator="1e+08" backgroundColor="#ffffff" transparency="0" width="15" scaleDependency="Area" backgroundAlpha="255" angleOffset="1440" scaleBasedVisibility="0" enabled="0" height="15" sizeType="MM" minScaleDenominator="-4.65661e-10">
           <fontProperties description="Ubuntu,11,-1,5,50,0,0,0,0,0" style=""/>
+          <attribute field="" color="#000000" label=""/>
         </DiagramCategory>
       </SingleCategoryDiagramRenderer>
       <DiagramLayerSettings yPosColumn="-1" linePlacementFlags="10" placement="0" dist="0" xPosColumn="-1" priority="0" obstacle="0" zIndex="0" showAll="1"/>
-      <annotationform></annotationform>
+      <annotationform>.</annotationform>
       <excludeAttributesWMS/>
       <excludeAttributesWFS/>
       <attributeactions/>
-      <editform></editform>
+      <editform>.</editform>
       <editforminit/>
       <editforminitcodesource>0</editforminitcodesource>
-      <editforminitfilepath></editforminitfilepath>
+      <editforminitfilepath>.</editforminitfilepath>
       <editforminitcode><![CDATA[# -*- codificação: utf-8 -*-
 """
 Os formulários do QGIS podem ter uma função Python que é chamada quando

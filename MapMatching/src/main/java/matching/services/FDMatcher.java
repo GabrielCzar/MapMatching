@@ -410,48 +410,80 @@ public class FDMatcher {
         App.logger.info("Invalid times finish!");
     }
 
-    public static void fillInvalidTimes (List<FDEntry> values, long diff, GraphHopperMapMatching matching) {
+    public static void fillInvalidTimes (List<FDEntry> values, long diff) {
         removeNegativeTimes(values); // Optimize later
 
-        DistanceCalc distanceCalc = new DistancePlaneProjection();
+
         List<Double> accumulateDistance = new ArrayList<>();
-        double distance = 0.0;
-        int initPos = 0;
-        long initialTime = values.get(0).getTime();
-        long finalTime = values.get(12).getTime();
+        double distance = 0.0, vm = 0.0;
+        int initPos = 0, i, j;
+        long initialTime = 0, finalTime = 0;
 
-        accumulateDistance.add(distance);
-        for (int i = 0; i < 12; i++) {
-            // Show actual position
-            App.logger.info("--- OLDER ---");
-            App.logger.info(values.get(i).toString());
+        int tam = values.size();
 
-            distance += distanceCalc.calcDist(
-                    values.get(i).getLat(),
-                    values.get(i).getLon(),
-                    values.get(i + 1).getLat(),
-                    values.get(i + 1).getLon()
-            );
+        for (i = 0; i < tam; i++) {
+            accumulateDistance = new ArrayList<>();
+            initialTime = values.get(i).getTime();
+            distance = 0.0;
+            initPos = i;
 
+            // start accumulative sum with 0.0
             accumulateDistance.add(distance);
+
+            for (j = i + 1; j < tam; j++) {
+                // init of the first value for sequence
+
+                // Difference in seconds
+                long interval = (values.get(j).getTime() - values.get(j - 1).getTime()) / 1000;
+
+                if (interval >= diff) {
+                    distance += calcDist(values.get(j - 1), values.get(j));
+
+                    finalTime = values.get(j).getTime();
+
+                    // average speed
+                    vm = calcAverageSpeed(distance, initialTime, finalTime);
+
+                    for (int k = 0; k < j - (initPos + 1); k++) {
+                        long timeVariation = calcTimeVariation(accumulateDistance.get(k), vm);
+                        values.get(initPos + 1 + k).setTime(initialTime + timeVariation);
+                    }
+
+                    App.logger.info("STOP -- " + j);
+
+                    i = --j;
+                    break;
+                }
+
+                distance += calcDist(values.get(j - 1), values.get(j));
+
+                accumulateDistance.add(distance);
+            }
         }
 
-        App.logger.info("DistTOTAL -- " + distance);
+        // Miss last values
 
-        double vm = distance / ((finalTime - initialTime) / 1000);
-
-        App.logger.info("VM -- " + vm);
-
-        for (int i = 1; i < 11; i++) {
-            long add = (long) ((accumulateDistance.get(i) / vm) * 1000);
-            values.get(i).setTime(initialTime + add);
+        for (int k = 330; k < 350; k++) {
+            App.logger.info(values.get(k).toString());
         }
+    }
 
-        for (int i = 0; i < 12; i++) {
-            App.logger.info("--- NEW ---");
-            App.logger.info(values.get(i).toString());
-        }
+    private static double calcAverageSpeed(double d, long iTime, long fTime){
+        return d / ((fTime - iTime) / 1000);
+    }
 
+    private static long calcTimeVariation(double d, double vm) {
+        return (long) ((d / vm) * 1000);
+    }
+
+    private static double calcDist(FDEntry last, FDEntry actual) {
+        DistanceCalc distanceCalc = new DistancePlaneProjection();
+        return distanceCalc.calcDist(
+                last.getLat(),
+                last.getLon(),
+                actual.getLat(),
+                actual.getLon()
+        );
     }
 
     public static List<FDEntry> convertGPXEntryInFCDEntry (List<GPXEntry> gpxEntries) {

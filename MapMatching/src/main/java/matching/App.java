@@ -45,7 +45,7 @@ public class App {
             List<FDEntry> fdEntriesNoGaps = FDMatcher.fillGaps(fdMatch);
 
             // Remove gaps in FD entries
-            FDMatcher.fillInvalidTimes(fdEntriesNoGaps, 120, mapMatching);
+            FDMatcher.fillInvalidTimes(fdEntriesNoGaps, 120);
 
             logger.info("-------- ENTRIES -------");
 
