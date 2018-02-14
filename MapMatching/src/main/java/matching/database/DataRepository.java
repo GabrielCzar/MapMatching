@@ -13,13 +13,57 @@ import java.util.Date;
 
 public class DataRepository {
 
-    public Map<Integer, List<GPXEntry>> getAllEntriesAsGPX(String tableName, int limit) throws ClassNotFoundException, SQLException, IOException {
+    /**
+     * Get all positions of the all taxis in determinate day
+     *
+     * @param tableName: Table name with data about taxis
+     * @return Map<Integer, List<GPXEntry> has taxi Id as key and all positions
+     * */
+    public Map<Integer, List<GPXEntry>> getAllEntriesAsGPX(String tableName) throws ClassNotFoundException, SQLException, IOException {
+        Connection connection = ConnectionFactory.getConnection();
+
+        String query = " select taxi_id, date_time, longitude, latitude from " + tableName
+                     + " WHERE date_time::date >= DATE '2008-02-02' AND date_time::date < DATE '2008-02-03' "
+                     + " order by date_time ";
+
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        Map<Integer, List<GPXEntry>> trajectories = new HashMap<>();
+
+        int _id;
+
+        ResultSet result = statement.executeQuery();
+
+        while (result.next()) {
+            _id = result.getInt("taxi_id");
+
+            if (!trajectories.containsKey(_id))
+                trajectories.put(_id, new ArrayList<>());
+            if (trajectories.containsKey(_id)) {
+                trajectories.get(_id).add(
+                        new GPXEntry(
+                                new GHPoint(
+                                        result.getDouble("latitude"),
+                                        result.getDouble("longitude")),
+                                        getDateTime(result.getString("date_time")).getTime()
+                        )
+                );
+            }
+        }
+
+        connection.close();
+
+        return trajectories;
+    }
+
+    public Map<Integer, List<GPXEntry>> getAllEntriesAsGPXFromTaxiID(String tableName, int taxiId, int limit) throws ClassNotFoundException, SQLException, IOException {
         Connection connection = ConnectionFactory.getConnection();
 
         String limited = limit > 0 ? "limit " + limit : "";
-        String query = "select taxi_id, date_time, longitude, latitude from " + tableName
+        String query =
+                  "select taxi_id, date_time, longitude, latitude from " + tableName
                 + " WHERE date_time::date >= DATE '2008-02-02' AND date_time::date < DATE '2008-02-03' "
-                + " order by date_time " + limited;
+                + " AND taxi_id = " + taxiId + " order by date_time " + limited;
 
         PreparedStatement statement = connection.prepareStatement(query);
 

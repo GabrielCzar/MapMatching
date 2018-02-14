@@ -21,7 +21,7 @@ public class MatchingController {
         mapMatching = new GraphHopperMapMatching(OSM_FILE_PATH, GHLOCATION);
     }
 
-    public List<XFDEntry> matchingEntries(List<GPXEntry> gpxUnmatched) {
+    public List<XFDEntry> matchingEntries(List<GPXEntry> gpxUnmatched, long taxiId) {
         // Convert GPX entries in FD entries
         List<FDEntry> fdUnmatched = Calc.convertGPXEntryInFCDEntry(gpxUnmatched);
         List<FDEntry> fdMatched = mapMatching.doMatchingAndGetFCDEntries(gpxUnmatched);
@@ -37,7 +37,7 @@ public class MatchingController {
 
         // Convert in XFD entries
         return fdEntriesNoGaps.stream().map(fdEntry ->
-                new XFDEntry(fdEntry, 1L) // with trajectory id
+                new XFDEntry(fdEntry, taxiId) // with trajectory id
         ).collect(Collectors.toList());
     }
 

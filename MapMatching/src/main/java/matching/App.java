@@ -3,17 +3,14 @@ package matching;
 import com.graphhopper.util.GPXEntry;
 import matching.controller.MatchingController;
 import matching.database.DataRepository;
-import matching.models.FDEntry;
 import matching.models.XFDEntry;
-import matching.services.FDMatcher;
-import matching.services.GraphHopperMapMatching;
-import matching.utils.Calc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class App {
     private static final String
@@ -27,32 +24,39 @@ public class App {
         logger.info("Init");
 
         DataRepository repository = new DataRepository();
+
+
+        Map<Integer, List<GPXEntry>> gpxEntries = null;
         try {
-            int limit = -1;
-            Map<Integer, List<GPXEntry>> gpxEntries =
-                    repository.getAllEntriesAsGPX(TABLE, limit);
-
-            // Match in GPX entries
-            List<GPXEntry> gpxUnmatched = gpxEntries.get(1);
-            logger.info("Read entries");
-
-            MatchingController controller = new MatchingController();
-            logger.info("Create GraphHopper instance");
-
-            List<XFDEntry> xfdEntries =
-                    controller.matchingEntries(gpxUnmatched);
-            logger.info("Matching entries");
-
-            //repository.createTableXFCDEntries();
-            logger.info("Trying save in database...");
-
-            repository.saveXFCDEntries(xfdEntries);
-
-            logger.info("Saved!");
-
-        } catch (Exception e) {
+            gpxEntries = repository.getAllEntriesAsGPX(TABLE);
+        } catch (ClassNotFoundException | SQLException | IOException e) {
             e.printStackTrace();
         }
+
+        MatchingController controller = new MatchingController();
+
+        // Match in GPX entries
+        for (Integer entry: gpxEntries.keySet()) {
+            List<GPXEntry> gpxUnmatched = gpxEntries.get(entry);
+
+            try {
+                List<XFDEntry> xfdEntries =
+                        controller.matchingEntries(gpxUnmatched, entry);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            logger.info("Matching entries for taxi: ");
+
+            logger.info("Trying save in database...");
+
+            //repository.saveXFCDEntries(xfdEntries);
+
+            logger.info("Saved entries for taxi");
+        }
+
+        logger.info("FINISH");
+
 
     }
 

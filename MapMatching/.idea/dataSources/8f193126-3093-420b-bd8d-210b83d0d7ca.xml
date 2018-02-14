@@ -30,8 +30,8 @@
     </role>
     <schema id="6" parent="2" name="public">
       <ObjectId>2200</ObjectId>
-      <IntrospectionTimestamp>2018-02-13.22:33:07.819</IntrospectionTimestamp>
-      <IntrospectionStateNumber>21532</IntrospectionStateNumber>
+      <IntrospectionTimestamp>2018-02-13.22:59:45.312</IntrospectionTimestamp>
+      <IntrospectionStateNumber>133690</IntrospectionStateNumber>
       <Current>1</Current>
       <Visible>1</Visible>
     </schema>
@@ -236,9 +236,9 @@
       <SubCategory>user-defined</SubCategory>
       <Definition>-</Definition>
     </object-type>
-    <table id="44" parent="6" name="convert">
+    <table id="44" parent="6" name="interest_points">
       <ObjectId>42745</ObjectId>
-      <StateNumber>21532</StateNumber>
+      <StateNumber>133690</StateNumber>
     </table>
     <table id="45" parent="6" name="matched_tracks">
       <ObjectId>34536</ObjectId>
