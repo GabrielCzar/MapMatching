@@ -1,15 +1,10 @@
 package matching.services;
 
-import com.graphhopper.GHRequest;
-import com.graphhopper.GHResponse;
-import com.graphhopper.PathWrapper;
 import com.graphhopper.util.DistanceCalc;
 import com.graphhopper.util.DistancePlaneProjection;
-import com.graphhopper.util.GPXEntry;
 import matching.App;
 import matching.models.FDEntry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import matching.utils.Calc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +14,9 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.stream.Collectors;
 
 public class FDMatcher {
+    private static double VMMIN = 0.001; // 1km 2 days
 
     //private static final Logger logger = LoggerFactory.getLogger(App.class);
 
@@ -243,47 +238,10 @@ public class FDMatcher {
         }
     }
 
-    public static void _fillInvalidTimes (List<FDEntry> values) {
-        System.out.println("INVALID --> " + values.get(0).getSpeed());
-        DistanceCalc distanceCalc = new DistancePlaneProjection();
-        double distance;
-        long time = 0;
-        double speed;
-        // Corrigir velocidade media dos pontos com tempo invalido
-        // Supondo que o primeiro tempo esta correto
-
-        for (int i = 1; i < values.size(); i++) {
-            if (values.get(i).getTime() <= 0) {
-                distance = distanceCalc.calcDist(values.get(i + 1).lat, values.get(i + 1).lon, values.get(i - 1).lat, values.get(i - 1).lon);
-
-                // exist the problem of the time if the before or after has invalid time
-                time = (values.get(i - 1).getTime() - values.get(i + 1).getTime()) / 1000;
-
-                speed = ((distance / time) * 3600) / 1000;
-                System.out.println("SPEED --> " + speed);
-                values.get(i).setSpeed(speed);
-            }
-        }
-
-        for (int i = 1; i < values.size(); i++) {
-            if (values.get(i).getTime() <= 0) {
-                if (values.get(i + 1).getTime() > 0) { // Before has time
-                    distance = distanceCalc.calcDist(values.get(i - 1).lat, values.get(i - 1).lon, values.get(i).lat, values.get(i).lon);
-                    time = values.get(i - 1).getTime() + (long) (distance / (values.get(i).getSpeed() / 3.6) * 1000);
-                } else if (values.get(i - 1).getTime() > 0) { // After has time
-                    distance = distanceCalc.calcDist(values.get(i).lat, values.get(i).lon, values.get(i + 1).lat, values.get(i + 1).lon);
-                    time = values.get(i + 1).getTime() - (long) (distance / (values.get(i).getSpeed() / 3.6) * 1000);
-                }
-                values.get(i).setTime(time);
-            }
-        }
-        System.out.println("FINISH INVALID TIME CORRECTED!");
-    }
-
     /**
      * If exists invalid times or negative timestamps, they are to be replaced for next valid value
      * */
-    public static void removeNegativeTimes(List<FDEntry> values) {
+    public static void removeNegativeTimestamps(List<FDEntry> values) {
         long time1, time2;
 
         // first value
@@ -311,117 +269,16 @@ public class FDMatcher {
      * @param values: FD entries with invalid timestamps
      * @param diff: Time interval from gps utilized for save each position (seconds)
      * */
-    public static void __fillInvalidTimes (List<FDEntry> values, long diff, GraphHopperMapMatching matching) {
-        removeNegativeTimes(values); // Optimize later
-
-        List<Double> accumulateDistance = new ArrayList<>();
-        double distance = 0.0;
-        int initPos = 0, i = 0, j = 0;
-        long initialTime = values.get(0).getTime();
-
-        for (;i < values.size(); i++) {
-            accumulateDistance = new ArrayList<>();
-            initialTime = values.get(i).getTime();
-            distance = 0.0;
-            initPos = i;
-
-            // start accumulative sum with 0.0
-            accumulateDistance.add(distance);
-
-            for (j = i + 1; j < values.size(); j++) {
-                // Difference in seconds
-                long duration = (values.get(j).getTime() - values.get(j - 1).getTime()) / 1000;
-
-                if (duration >= diff) {
-
-                    App.logger.info(values.get(j).toString());
-
-                    long finalTime = values.get(j).getTime();
-
-                    try {
-                        distance += matching
-                                .calcDistance(
-                                        new GHRequest(
-                                                values.get(j - 1).lat,
-                                                values.get(j - 1).lon,
-                                                values.get(j).lat,
-                                                values.get(j).lon))
-                                .getBest()
-                                .getDistance();
-                    } catch (RuntimeException e) {
-                        App.logger.info("the best response not found");
-                    }
-
-                    double vm = distance / ((finalTime - initialTime) / 1000);
-
-                    App.logger.info("Speed" + values.get(j).getSpeed() + "Vm - " + vm + " | distance - " + distance);
-
-                    int finalPos = j;
-
-                    // call method for alter the times
-                    for (int k = initPos + 1; k < finalPos; k++) {
-
-                        distance = accumulateDistance.get(k - (initPos + 1));
-
-                        long newTime = (long) ((distance / vm) * 1000);
-
-                        values.get(k).setTime(values.get(k - 1).getTime() + newTime);
-                    }
-
-                    // Change i for next sequence
-                    i = j;
-                    break;
-                }
-
-                try {
-                    distance += matching
-                            .calcDistance(
-                                    new GHRequest(
-                                        values.get(j - 1).lat,
-                                        values.get(j - 1).lon,
-                                        values.get(j).lat,
-                                        values.get(j).lon))
-                            .getBest()
-                            .getDistance();
-                } catch (RuntimeException e) {
-                    distance += 0;
-                }
-
-                accumulateDistance.add(distance);
-            }
-
-        }
-
-        long finalTime = values.get(j - 1).getTime();
-
-        double vm = distance / ((finalTime - initialTime) / 1000);
-
-        int finalPos = j - 1;
-
-        // call method for alter the times
-        for (int k = initPos + 1; k < finalPos; k++) {
-
-            distance = accumulateDistance.get(k - (initPos + 1));
-
-            long newTime = (long) ((distance / vm) * 1000);
-
-            values.get(k).setTime(values.get(k - 1).getTime() + newTime);
-        }
-        App.logger.info("Invalid times finish!");
-    }
-
     public static void fillInvalidTimes (List<FDEntry> values, long diff) {
-        removeNegativeTimes(values); // Optimize later
-
+        removeNegativeTimestamps(values); // Optimize later
 
         List<Double> accumulateDistance = new ArrayList<>();
-        double distance = 0.0, vm = 0.0;
-        int initPos = 0, i, j;
-        long initialTime = 0, finalTime = 0;
+        int initPos = 0, i, j = 0, lastMatch = 0, tam = values.size();
+        long initialTime = 0, finalTime;
+        double distance, vm = 0.0, oldVM;
+        boolean isMatching = true;
 
-        int tam = values.size();
-
-        for (i = 0; i < tam; i++) {
+        for (i = initPos; isMatching ; i++) {
             accumulateDistance = new ArrayList<>();
             initialTime = values.get(i).getTime();
             distance = 0.0;
@@ -431,63 +288,74 @@ public class FDMatcher {
             accumulateDistance.add(distance);
 
             for (j = i + 1; j < tam; j++) {
-                // init of the first value for sequence
+                if (j + 1 >= tam)
+                    isMatching = false;
 
                 // Difference in seconds
-                long interval = (values.get(j).getTime() - values.get(j - 1).getTime()) / 1000;
+                long interval = Calc.calcTimeInterval(
+                        values.get(j).getTime(),
+                        values.get(j - 1).getTime()
+                );
 
                 if (interval >= diff) {
-                    distance += calcDist(values.get(j - 1), values.get(j));
+                    distance += Calc.calcDist(values.get(j - 1), values.get(j));
 
                     finalTime = values.get(j).getTime();
 
                     // average speed
-                    vm = calcAverageSpeed(distance, initialTime, finalTime);
+                    oldVM = vm;
+                    vm = Calc.calcAverageSpeed(distance, initialTime, finalTime);
+
+                    if (vm < VMMIN) vm = oldVM; // supposedly don't exist traffic jam of the 2 days
 
                     for (int k = 0; k < j - (initPos + 1); k++) {
-                        long timeVariation = calcTimeVariation(accumulateDistance.get(k), vm);
+                        long timeVariation = Calc.calcTimeVariation(accumulateDistance.get(k), vm); // milliseconds
                         values.get(initPos + 1 + k).setTime(initialTime + timeVariation);
                     }
 
-                    App.logger.info("STOP -- " + j);
+                    lastMatch = j; // For verify if exist values not matched
 
-                    i = --j;
+                    i = --j; // Back to init value of the sequence
                     break;
                 }
 
-                distance += calcDist(values.get(j - 1), values.get(j));
+                distance += Calc.calcDist(values.get(j - 1), values.get(j));
 
                 accumulateDistance.add(distance);
             }
         }
+        // Optimize later --------------------------------
 
-        // Miss last values
+        // If exist match before finish all values, in last position, don't exist values to be matched
+        if (lastMatch + 1 < tam) {
+            // Don't has average speed, use last average speed
 
-        for (int k = 330; k < 350; k++) {
-            App.logger.info(values.get(k).toString());
+            double dist = accumulateDistance.get(0);
+            if (dist > 0 && initialTime > 0) {
+                for (int k = 0; k < j - (initPos + 1); k++) {
+                    dist = accumulateDistance.get(k);
+                    long timeVariation = Calc.calcTimeVariation(dist, vm); // milliseconds
+                    values.get(initPos + 1 + k).setTime(initialTime + timeVariation);
+                }
+            } else {
+                initialTime = values.get(initPos - 1).getTime();
+                accumulateDistance = new ArrayList<>();
+                distance = 0.0;
+
+                for (int k = initPos; k < values.size(); k++) {
+                    distance += Calc.calcDist(values.get(k - 1), values.get(k));
+                    accumulateDistance.add(distance);
+                }
+
+                for (int k = initPos; k < values.size(); k++) {
+                    dist = accumulateDistance.get(k - initPos);
+                    long timeVariation = Calc.calcTimeVariation(dist, vm);
+                    values.get(k).setTime(initialTime + timeVariation);
+                }
+            }
+
         }
-    }
 
-    private static double calcAverageSpeed(double d, long iTime, long fTime){
-        return d / ((fTime - iTime) / 1000);
-    }
-
-    private static long calcTimeVariation(double d, double vm) {
-        return (long) ((d / vm) * 1000);
-    }
-
-    private static double calcDist(FDEntry last, FDEntry actual) {
-        DistanceCalc distanceCalc = new DistancePlaneProjection();
-        return distanceCalc.calcDist(
-                last.getLat(),
-                last.getLon(),
-                actual.getLat(),
-                actual.getLon()
-        );
-    }
-
-    public static List<FDEntry> convertGPXEntryInFCDEntry (List<GPXEntry> gpxEntries) {
-        return gpxEntries.stream().map(gpxEntry -> new FDEntry(gpxEntry)).collect(Collectors.toList());
     }
 
 }
