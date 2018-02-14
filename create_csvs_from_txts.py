@@ -20,5 +20,6 @@ file = 'taxi_data'
 
 for _, file_path in enumerate(get_files(file)):
 	data.append(get_data_from_folder(file_path))
-	data = pd.concat(data, ignore_index=True)
-	data.to_csv('taxi_data.csv', index=False)
+	
+data = pd.concat(data, ignore_index=True)
+data.to_csv('taxi_data.csv', index=False)
