@@ -40,6 +40,7 @@ public class App {
             List<GPXEntry> gpxUnmatched = gpxEntries.get(entry);
 
             try {
+                // Miss pre processing of the data
                 List<XFDEntry> xfdEntries =
                         controller.matchingEntries(gpxUnmatched, entry);
             } catch (Exception e) {

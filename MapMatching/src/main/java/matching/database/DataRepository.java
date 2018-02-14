@@ -56,48 +56,7 @@ public class DataRepository {
         return trajectories;
     }
 
-    public Map<Integer, List<GPXEntry>> getAllEntriesAsGPXFromTaxiID(String tableName, int taxiId, int limit) throws ClassNotFoundException, SQLException, IOException {
-        Connection connection = ConnectionFactory.getConnection();
-
-        String limited = limit > 0 ? "limit " + limit : "";
-        String query =
-                  "select taxi_id, date_time, longitude, latitude from " + tableName
-                + " WHERE date_time::date >= DATE '2008-02-02' AND date_time::date < DATE '2008-02-03' "
-                + " AND taxi_id = " + taxiId + " order by date_time " + limited;
-
-        PreparedStatement statement = connection.prepareStatement(query);
-
-        Map<Integer, List<GPXEntry>> trajectories = new HashMap<>();
-        ArrayList<GPXEntry> entries = new ArrayList<>();
-
-        int _id = -1;
-
-        ResultSet result = statement.executeQuery();
-
-        while (result.next()) {
-            if (_id == -1) {
-                _id = result.getInt(1);
-            } else if (_id != result.getInt(1)) {
-                _id = result.getInt(1);
-                trajectories.put(_id, entries);
-                entries = new ArrayList<>();
-            }
-
-            entries.add(
-                    new GPXEntry(
-                            new GHPoint(
-                                    result.getDouble("latitude"),
-                                    result.getDouble("longitude")),
-                            getDateTime(result.getString("date_time")).getTime()));
-        }
-
-        trajectories.put(_id, entries);
-
-        connection.close();
-
-        return trajectories;
-    }
-
+    /// ERROR
     public void createTableXFCDEntries() {
         Connection connection = null;
         try {
