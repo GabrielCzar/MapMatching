@@ -1,12 +1,17 @@
 package matching.controller;
 
+import com.graphhopper.util.DistanceCalc;
+import com.graphhopper.util.DistancePlaneProjection;
 import com.graphhopper.util.GPXEntry;
+import matching.App;
 import matching.models.FDEntry;
 import matching.models.XFDEntry;
 import matching.services.FDMatcher;
 import matching.services.GraphHopperMapMatching;
 import matching.utils.Calc;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +37,10 @@ public class MatchingController {
 
         List<FDEntry> fdEntriesNoGaps = FDMatcher.fillGaps(fdMatch);
 
+        // Alternative: Replace the first and last if I've been in the 1km radius for gpxEntries times.
+        if (fdEntriesNoGaps.size() <= 0)
+            throw new NullPointerException("Gaps not filled");
+
         // Remove gaps in FD entries
         long diff = 120; // 2 minutes
         FDMatcher.fillInvalidTimes(fdEntriesNoGaps, diff);
@@ -43,7 +52,46 @@ public class MatchingController {
     }
 
     public List<GPXEntry> preProcessing(List<GPXEntry> gpxEntries) {
-        return null;
+        List<GPXEntry> newEntries = new ArrayList<>();
+        int tam = gpxEntries.size();
+        double dist, distanceLimit = 15000; // 15km
+
+        // Doesn't have the amount of data needed
+        if (tam <= 2)
+            return new ArrayList<>();
+//
+//        List<Double> acc = new ArrayList<>();
+//
+//        for (int i = 1; i < tam; i++) {
+//            dist = Calc.calcDist(gpxEntries.get(i - 1), gpxEntries.get(i));
+//            acc.add(dist);
+//        }
+//
+//        Collections.sort(acc);
+//
+//        int median = tam % 2 == 0 ? tam / 2 + 1 : tam / 2;
+        //App.logger.info("MEDIAN >> " + median);
+
+        //App.logger.info("MEDIAN VALUE >> " + acc.get(median));
+
+        //double estimator = (1.4826 * acc.get(median));
+
+        //App.logger.info("ESTIMATOR >> " + estimator);
+
+        //distanceLimit = estimator * 1000;
+
+        newEntries.add(gpxEntries.get(0));
+
+        for (int i = 1; i < tam; i++) {
+            dist = Calc.calcDist(gpxEntries.get(i - 1), gpxEntries.get(i));
+
+            if (dist > distanceLimit)
+                break;
+
+            newEntries.add(gpxEntries.get(i));
+        }
+
+        return newEntries;
     }
 
 }

@@ -245,8 +245,14 @@ public class FDMatcher {
         long time1, time2;
 
         // first value
-        if (values.get(0).getTime() <= 0)
-            values.get(0).setTime(values.get(1).getTime());
+        if (values.get(0).getTime() <= 0) {
+            for (int i = 1; i < values.size(); i++) {
+                if (values.get(i).getTime() > 0) {
+                    values.get(0).setTime(values.get(i).getTime());
+                    break;
+                }
+            }
+        }
 
         // only values of middle
         for (int i = 1; i < values.size() - 2; i++) {
@@ -261,8 +267,6 @@ public class FDMatcher {
         // last value
         if (values.get(values.size() - 1).getTime() <= 0)
             values.get(values.size() - 1).setTime(values.get(values.size() - 2).getTime());
-
-        App.logger.info("Remove negative times finish!");
     }
 
     /**
@@ -353,9 +357,7 @@ public class FDMatcher {
                     values.get(k).setTime(initialTime + timeVariation);
                 }
             }
-
         }
-
     }
 
 }

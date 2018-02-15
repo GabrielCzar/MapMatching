@@ -31,32 +31,39 @@ public class App {
         try {
             gpxEntries = repository.getAllEntriesAsGPX(TABLE);
         } catch (ClassNotFoundException | SQLException | IOException e) {
+            logger.error("Error in read gpx entries");
             e.printStackTrace();
         }
 
         MatchingController controller = new MatchingController();
 
         // Match in GPX entries
-        for (Integer entry: gpxEntries.keySet()) {
+        //for (Integer entry: gpxEntries.keySet()) {
+            Integer entry = 35;
             List<GPXEntry> gpxUnmatched = gpxEntries.get(entry);
+            logger.info("SIZE UN >> " + gpxUnmatched.size());
 
-            // Doesn't have the amount of data needed
-            if (gpxUnmatched.size() <= 2)
-                continue;
+            List<GPXEntry> gpxPreProcessing = controller.preProcessing(gpxUnmatched);
+
+            logger.info("SIZE PRE >> " + gpxPreProcessing.size());
+
+    //        if (gpxPreProcessing.size() <= 0)
+      //          continue;
 
             try {
-                // Miss pre processing of the data
-                List<XFDEntry> xfdEntries = controller.matchingEntries(gpxUnmatched, entry);
+                List<XFDEntry> xfdEntries = controller.matchingEntries(gpxPreProcessing, entry);
 
-                repository.saveXFCDEntries(xfdEntries);
+                logger.info("XFD SIZE >> " + xfdEntries.size());
 
-                logger.info("Saved entries for taxi " + entry);
+          //      repository.saveXFCDEntries(xfdEntries);
+
+            //    logger.info("Saved entries for taxi " + entry);
 
             } catch (Exception e) {
-                logger.error(entry.toString());
+                logger.error("Error to matching entry " + entry.toString());
                 e.printStackTrace();
             }
-        }
+        //}
         logger.info("FINISH");
     }
 

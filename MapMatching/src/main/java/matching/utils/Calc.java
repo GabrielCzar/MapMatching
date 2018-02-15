@@ -18,7 +18,7 @@ public class Calc {
         return (long) ((d / vm) * 1000);
     }
 
-    public static double calcDist(FDEntry last, FDEntry actual) {
+    public static double calcDist(GPXEntry last, GPXEntry actual) {
         DistanceCalc distanceCalc = new DistancePlaneProjection();
         return distanceCalc.calcDist(
                 last.getLat(),
