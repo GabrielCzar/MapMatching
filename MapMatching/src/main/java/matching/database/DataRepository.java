@@ -2,6 +2,7 @@ package matching.database;
 
 import com.graphhopper.util.GPXEntry;
 import com.graphhopper.util.shapes.GHPoint;
+import matching.App;
 import matching.models.XFDEntry;
 
 import java.io.IOException;
@@ -149,6 +150,7 @@ public class DataRepository {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
+            App.logger.error("Timestamp invalid in " + entry.toString());
             e.printStackTrace();
         }
 

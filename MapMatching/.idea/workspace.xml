@@ -51,15 +51,6 @@
         <item name="public: schema" type="a16502c0:PostgresImplModel$Schema" />
         <item name="tables" type="d4e8921:DatabaseStructure$FamilyGroup" />
       </path>
-      <path>
-        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
-        <item name="trajectory-data@0.0.0.0" type="feb32156:DbDataSourceImpl" />
-        <item name="databases" type="d4e8921:DatabaseStructure$FamilyGroup" />
-        <item name="trajectory-data: database" type="6d9b600a:PostgresImplModel$Database" />
-        <item name="public: schema" type="a16502c0:PostgresImplModel$Schema" />
-        <item name="tables" type="d4e8921:DatabaseStructure$FamilyGroup" />
-        <item name="taxi_data: table" type="a93d6ac6:PostgresImplModel$LocalTable" />
-      </path>
     </expand>
     <select />
   </component>
@@ -68,7 +59,7 @@
       <file leaf-file-name="FDMatcher.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/matching/services/FDMatcher.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="72">
+            <state relative-caret-position="0">
               <caret line="326" column="58" lean-forward="false" selection-start-line="326" selection-start-column="58" selection-end-line="326" selection-end-column="58" />
               <folding>
                 <element signature="method#doFCDMatching#0;class#FDMatcher#0" expanded="false" />
@@ -83,28 +74,23 @@
       <file leaf-file-name="App.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/matching/App.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="158">
-              <caret line="39" column="39" lean-forward="true" selection-start-line="39" selection-start-column="39" selection-end-line="39" selection-end-column="39" />
+            <state relative-caret-position="90">
+              <caret line="43" column="53" lean-forward="false" selection-start-line="43" selection-start-column="53" selection-end-line="43" selection-end-column="53" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="taxi_data" pinned="false" current-in-tab="false">
-        <entry file="das://table:/8e87697d/8f193126-3093-420b-bd8d-210b83d0d7ca/trajectory-data.public.taxi_data">
-          <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-            <state>
-              <filtering enabled="true" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="console.sql" pinned="false" current-in-tab="false">
-        <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/8f193126-3093-420b-bd8d-210b83d0d7ca/console.sql">
+      <file leaf-file-name="MatchingController.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/matching/controller/MatchingController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="54">
-              <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="144">
+              <caret line="29" column="12" lean-forward="false" selection-start-line="29" selection-start-column="12" selection-end-line="29" selection-end-column="12" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1714#1715#0" expanded="true" />
+                <element signature="e#1741#1742#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -156,10 +142,10 @@
         <option value="$PROJECT_DIR$/src/main/java/matching/services/GraphHopperMapMatching.java" />
         <option value="$PROJECT_DIR$/src/main/java/matching/utils/Calc.java" />
         <option value="$PROJECT_DIR$/src/main/java/matching/services/FDMatcher.java" />
-        <option value="$APPLICATION_CONFIG_DIR$/consoles/db/8f193126-3093-420b-bd8d-210b83d0d7ca/console.sql" />
-        <option value="$PROJECT_DIR$/src/main/java/matching/App.java" />
         <option value="$PROJECT_DIR$/src/main/java/matching/controller/MatchingController.java" />
         <option value="$PROJECT_DIR$/src/main/java/matching/database/DataRepository.java" />
+        <option value="$APPLICATION_CONFIG_DIR$/consoles/db/8f193126-3093-420b-bd8d-210b83d0d7ca/console.sql" />
+        <option value="$PROJECT_DIR$/src/main/java/matching/App.java" />
       </list>
     </option>
   </component>
@@ -271,9 +257,9 @@
           <select />
         </subPane>
       </pane>
-      <pane id="AndroidView" />
       <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="AndroidView" />
       <pane id="Scratches" />
     </panes>
   </component>
@@ -448,12 +434,13 @@
       <workItem from="1518551830840" duration="8210000" />
       <workItem from="1518562511133" duration="5354000" />
       <workItem from="1518571845824" duration="3435000" />
-      <workItem from="1518580295417" duration="3171000" />
+      <workItem from="1518580295417" duration="3227000" />
+      <workItem from="1518670142522" duration="2874000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="95843000" />
+    <option name="totallyTimeSpent" value="98773000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="10" y="47" width="1366" height="741" extended-state="6" />
@@ -472,7 +459,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32838285" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32838285" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32838285" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24924242" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -554,19 +541,54 @@
         </state>
       </provider>
     </entry>
+    <entry file="das://table:/8e87697d/8f193126-3093-420b-bd8d-210b83d0d7ca/trajectory-data.public.taxi_data">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/8f193126-3093-420b-bd8d-210b83d0d7ca/console.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/matching/App.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="702">
+          <caret line="39" column="39" lean-forward="true" selection-start-line="39" selection-start-column="39" selection-end-line="39" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/matching/services/FDMatcher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1422">
+          <caret line="326" column="58" lean-forward="false" selection-start-line="326" selection-start-column="58" selection-end-line="326" selection-end-column="58" />
+          <folding>
+            <element signature="method#doFCDMatching#0;class#FDMatcher#0" expanded="false" />
+            <element signature="method#fillGaps#0;class#FDMatcher#0" expanded="false" />
+            <element signature="method#fillGap#0;class#FDMatcher#0" expanded="false" />
+            <element signature="method#removeNegativeTimestamps#0;class#FDMatcher#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/matching/database/DataRepository.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
           <caret line="21" column="35" lean-forward="false" selection-start-line="21" selection-start-column="35" selection-end-line="21" selection-end-column="35" />
           <folding>
             <element signature="docComment;method#getAllEntriesAsGPX#0;class#DataRepository#0" expanded="false" />
-            <element signature="e#4365#4366#0" expanded="true" />
-            <element signature="e#4427#4428#0" expanded="true" />
-            <element signature="method#saveXFCDEntry#0;class#DataRepository#0" expanded="false" />
+            <element signature="e#4386#4387#0" expanded="false" />
+            <element signature="e#4448#4449#0" expanded="false" />
             <element signature="method#getDateTime#0;class#DataRepository#0" expanded="false" />
-            <marker date="1518583596835" expanded="true" signature="787:1006" ph="select taxi_... missingValue" />
-            <marker date="1518583596835" expanded="true" signature="787:1007" ph="select taxi_... missingValue" />
-            <marker date="1518583596835" expanded="true" signature="4732:4890" ph="insert into matched_tracks... " />
+            <marker date="1518672869577" expanded="true" signature="808:1027" ph="select taxi_... missingValue" />
+            <marker date="1518672869577" expanded="true" signature="808:1028" ph="select taxi_... missingValue" />
+            <marker date="1518672869577" expanded="true" signature="4753:4911" ph="insert into matched_tracks... " />
           </folding>
         </state>
       </provider>
@@ -739,13 +761,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="das://table:/8e87697d/8f193126-3093-420b-bd8d-210b83d0d7ca/trajectory-data.public.matched_tracks">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/com/graphhopper/graphhopper-map-matching-core/0.9.0/graphhopper-map-matching-core-0.9.0.jar!/com/graphhopper/matching/MapMatching.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="67">
@@ -761,24 +776,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="das://table:/8e87697d/8f193126-3093-420b-bd8d-210b83d0d7ca/trajectory-data.public.taxi_data">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/8f193126-3093-420b-bd8d-210b83d0d7ca/console.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="54">
-          <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/matching/services/FDMatcher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="72">
+        <state relative-caret-position="0">
           <caret line="326" column="58" lean-forward="false" selection-start-line="326" selection-start-column="58" selection-end-line="326" selection-end-column="58" />
           <folding>
             <element signature="method#doFCDMatching#0;class#FDMatcher#0" expanded="false" />
@@ -789,39 +789,68 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/matching/controller/MatchingController.java">
+    <entry file="jar:///usr/lib/jvm/java-9-oracle/lib/src.zip!/java.base/java/lang/Iterable.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="576">
-          <caret line="49" column="20" lean-forward="false" selection-start-line="49" selection-start-column="20" selection-end-line="49" selection-end-column="20" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1710#1711#0" expanded="true" />
-            <element signature="e#1737#1738#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="193">
+          <caret line="71" column="17" lean-forward="false" selection-start-line="71" selection-start-column="17" selection-end-line="71" selection-end-column="17" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/matching/database/DataRepository.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="792">
-          <caret line="58" column="13" lean-forward="false" selection-start-line="58" selection-start-column="13" selection-end-line="58" selection-end-column="13" />
+        <state relative-caret-position="367">
+          <caret line="152" column="73" lean-forward="true" selection-start-line="152" selection-start-column="73" selection-end-line="152" selection-end-column="73" />
           <folding>
             <element signature="docComment;method#getAllEntriesAsGPX#0;class#DataRepository#0" expanded="false" />
-            <element signature="e#4365#4366#0" expanded="true" />
-            <element signature="e#4427#4428#0" expanded="true" />
-            <element signature="method#saveXFCDEntry#0;class#DataRepository#0" expanded="false" />
+            <element signature="e#4386#4387#0" expanded="false" />
+            <element signature="e#4448#4449#0" expanded="false" />
             <element signature="method#getDateTime#0;class#DataRepository#0" expanded="false" />
-            <marker date="1518583596835" expanded="true" signature="787:1006" ph="select taxi_... missingValue" />
-            <marker date="1518583596835" expanded="true" signature="787:1007" ph="select taxi_... missingValue" />
-            <marker date="1518583596835" expanded="true" signature="4732:4890" ph="insert into matched_tracks... " />
+            <marker date="1518672869577" expanded="true" signature="808:1027" ph="select taxi_... missingValue" />
+            <marker date="1518672869577" expanded="true" signature="808:1028" ph="select taxi_... missingValue" />
+            <marker date="1518672869577" expanded="true" signature="4753:4911" ph="insert into matched_tracks... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/8f193126-3093-420b-bd8d-210b83d0d7ca/console.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://table:/8e87697d/8f193126-3093-420b-bd8d-210b83d0d7ca/trajectory-data.public.taxi_data">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://table:/8e87697d/8f193126-3093-420b-bd8d-210b83d0d7ca/trajectory-data.public.matched_tracks">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/matching/controller/MatchingController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="29" column="12" lean-forward="false" selection-start-line="29" selection-start-column="12" selection-end-line="29" selection-end-column="12" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1714#1715#0" expanded="true" />
+            <element signature="e#1741#1742#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/matching/App.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="158">
-          <caret line="39" column="39" lean-forward="true" selection-start-line="39" selection-start-column="39" selection-end-line="39" selection-end-column="39" />
+        <state relative-caret-position="90">
+          <caret line="43" column="53" lean-forward="false" selection-start-line="43" selection-start-column="53" selection-end-line="43" selection-end-column="53" />
           <folding />
         </state>
       </provider>

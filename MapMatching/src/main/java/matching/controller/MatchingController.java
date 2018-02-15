@@ -25,10 +25,6 @@ public class MatchingController {
         // Convert GPX entries in FD entries
         List<FDEntry> fdUnmatched = Calc.convertGPXEntryInFCDEntry(gpxUnmatched);
 
-        // Temporary solution
-        if (fdUnmatched.size() <= 2)
-            return fdUnmatched.stream().map(fdEntry -> new XFDEntry(fdEntry, taxiId)).collect(Collectors.toList());
-
         List<FDEntry> fdMatched = mapMatching.doMatchingAndGetFCDEntries(gpxUnmatched);
 
         // Rematch FD entries
