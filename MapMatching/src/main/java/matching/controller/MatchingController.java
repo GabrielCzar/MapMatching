@@ -54,31 +54,11 @@ public class MatchingController {
     public List<GPXEntry> preProcessing(List<GPXEntry> gpxEntries) {
         List<GPXEntry> newEntries = new ArrayList<>();
         int tam = gpxEntries.size();
-        double dist, distanceLimit = 15000; // 15km
+        double dist, distanceLimit = 20000; // Using 120km/h in 10min -> 20km
 
         // Doesn't have the amount of data needed
         if (tam <= 2)
             return new ArrayList<>();
-//
-//        List<Double> acc = new ArrayList<>();
-//
-//        for (int i = 1; i < tam; i++) {
-//            dist = Calc.calcDist(gpxEntries.get(i - 1), gpxEntries.get(i));
-//            acc.add(dist);
-//        }
-//
-//        Collections.sort(acc);
-//
-//        int median = tam % 2 == 0 ? tam / 2 + 1 : tam / 2;
-        //App.logger.info("MEDIAN >> " + median);
-
-        //App.logger.info("MEDIAN VALUE >> " + acc.get(median));
-
-        //double estimator = (1.4826 * acc.get(median));
-
-        //App.logger.info("ESTIMATOR >> " + estimator);
-
-        //distanceLimit = estimator * 1000;
 
         newEntries.add(gpxEntries.get(0));
 

@@ -22,8 +22,10 @@ public class App {
     public static final Logger logger =
             LoggerFactory.getLogger(App.class);
 
+
+    // Error Tax 6% with 50 taxis
     public static void main(String[] args) {
-        logger.info("Init");
+        logger.info("Init Map Matching");
 
         DataRepository repository = new DataRepository();
 
@@ -38,17 +40,17 @@ public class App {
         MatchingController controller = new MatchingController();
 
         // Match in GPX entries
-        //for (Integer entry: gpxEntries.keySet()) {
-            Integer entry = 35;
+        for (Integer entry: gpxEntries.keySet()) {
             List<GPXEntry> gpxUnmatched = gpxEntries.get(entry);
+
             logger.info("SIZE UN >> " + gpxUnmatched.size());
 
             List<GPXEntry> gpxPreProcessing = controller.preProcessing(gpxUnmatched);
 
             logger.info("SIZE PRE >> " + gpxPreProcessing.size());
 
-    //        if (gpxPreProcessing.size() <= 0)
-      //          continue;
+            if (gpxPreProcessing.size() <= 0)
+                continue;
 
             try {
                 List<XFDEntry> xfdEntries = controller.matchingEntries(gpxPreProcessing, entry);
@@ -60,10 +62,10 @@ public class App {
             //    logger.info("Saved entries for taxi " + entry);
 
             } catch (Exception e) {
-                logger.error("Error to matching entry " + entry.toString());
+                logger.error("\nError to matching entry " + entry.toString());
                 e.printStackTrace();
             }
-        //}
+        }
         logger.info("FINISH");
     }
 
