@@ -1,6 +1,5 @@
 package matching.utils;
 
-import matching.models.FDEntry;
 import matching.models.XFDEntry;
 
 import java.io.FileOutputStream;
@@ -29,10 +28,10 @@ public class CSVWriter {
 
     public static void writerGFCDEntries(String filename, List<XFDEntry> points, Integer trajectoryID) {
         HEADER = XFDEntry.HEADER;
-        writer(filename, points.stream().map(entry -> formatGFCDEntry(entry, trajectoryID)).collect(Collectors.toList()));
+        writer(filename, points.stream().map(entry -> formatXFDEntry(entry, trajectoryID)).collect(Collectors.toList()));
     }
 
-    private static String formatGFCDEntry(FDEntry entry, int trajectoryID) {
+    private static String formatXFDEntry(XFDEntry entry, int trajectoryID) {
         return trajectoryID + ", " + entry.toString();
     }
 }

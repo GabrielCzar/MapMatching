@@ -4,11 +4,9 @@ import com.graphhopper.util.GPXEntry;
 import matching.controller.MatchingController;
 import matching.database.DataRepository;
 import matching.models.XFDEntry;
-import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,48 +22,40 @@ public class App {
 
 
     // Error Tax 6% with 50 taxis
+    //
     public static void main(String[] args) {
         logger.info("Init Map Matching");
 
         DataRepository repository = new DataRepository();
 
-        Map<Integer, List<GPXEntry>> gpxEntries = null;
-        try {
-            gpxEntries = repository.getAllEntriesAsGPX(TABLE);
-        } catch (ClassNotFoundException | SQLException | IOException e) {
-            logger.error("Error in read gpx entries");
-            e.printStackTrace();
-        }
+        Map<Integer, List<GPXEntry>> gpxEntries = repository.getAllEntries(TABLE);
 
         MatchingController controller = new MatchingController();
+
+        List<XFDEntry> matchingEntries = new ArrayList<>();
 
         // Match in GPX entries
         for (Integer entry: gpxEntries.keySet()) {
             List<GPXEntry> gpxUnmatched = gpxEntries.get(entry);
 
-            logger.info("SIZE UN >> " + gpxUnmatched.size());
-
-            List<GPXEntry> gpxPreProcessing = controller.preProcessing(gpxUnmatched);
-
-            logger.info("SIZE PRE >> " + gpxPreProcessing.size());
-
-            if (gpxPreProcessing.size() <= 0)
-                continue;
-
             try {
-                List<XFDEntry> xfdEntries = controller.matchingEntries(gpxPreProcessing, entry);
+                List<XFDEntry> xfdEntries = controller.matchingEntries(gpxUnmatched, entry);
 
-                logger.info("XFD SIZE >> " + xfdEntries.size());
-
-          //      repository.saveXFCDEntries(xfdEntries);
-
-            //    logger.info("Saved entries for taxi " + entry);
-
+                if (xfdEntries.size() > 0) {
+                    matchingEntries.addAll(xfdEntries);
+                    logger.info("Entries for taxi " + entry);
+                } else {
+                    logger.info("No sufficiently data of taxi " + entry);
+                }
             } catch (Exception e) {
                 logger.error("\nError to matching entry " + entry.toString());
                 e.printStackTrace();
             }
         }
+        logger.info("Matching Finish.\nSave result in db.");
+
+        repository.saveXFDEntries(matchingEntries);
+
         logger.info("FINISH");
     }
 

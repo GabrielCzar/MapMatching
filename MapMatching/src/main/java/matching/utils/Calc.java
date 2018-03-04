@@ -3,10 +3,6 @@ package matching.utils;
 import com.graphhopper.util.DistanceCalc;
 import com.graphhopper.util.DistancePlaneProjection;
 import com.graphhopper.util.GPXEntry;
-import matching.models.FDEntry;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class Calc {
 
@@ -32,7 +28,4 @@ public class Calc {
         return (actual - previous) / 1000;
     }
 
-    public static List<FDEntry> convertGPXEntryInFCDEntry (List<GPXEntry> gpxEntries) {
-        return gpxEntries.stream().map(FDEntry::new).collect(Collectors.toList());
-    }
 }
