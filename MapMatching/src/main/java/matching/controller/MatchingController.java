@@ -1,19 +1,14 @@
 package matching.controller;
 
-import com.graphhopper.util.DistanceCalc;
-import com.graphhopper.util.DistancePlaneProjection;
 import com.graphhopper.util.GPXEntry;
-import matching.App;
-import matching.models.FDEntry;
 import matching.models.XFDEntry;
 import matching.services.FDMatcher;
 import matching.services.GraphHopperMapMatching;
 import matching.utils.Calc;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MatchingController {
     private static final String
@@ -26,52 +21,65 @@ public class MatchingController {
         mapMatching = new GraphHopperMapMatching(OSM_FILE_PATH, GHLOCATION);
     }
 
-    public List<XFDEntry> matchingEntries(List<GPXEntry> gpxUnmatched, long taxiId) {
-        // Convert GPX entries in FD entries
-        List<FDEntry> fdUnmatched = Calc.convertGPXEntryInFCDEntry(gpxUnmatched);
-
-        List<FDEntry> fdMatched = mapMatching.doMatchingAndGetFCDEntries(gpxUnmatched);
-
-        // Rematch FD entries
-        List<FDEntry> fdMatch = FDMatcher.doFCDMatching(fdUnmatched, fdMatched);
-
-        List<FDEntry> fdEntriesNoGaps = FDMatcher.fillGaps(fdMatch);
-
-        // Alternative: Replace the first and last if I've been in the 1km radius for gpxEntries times.
-        if (fdEntriesNoGaps.size() <= 0)
-            throw new NullPointerException("Gaps not filled");
-
-        // Remove gaps in FD entries
-        long diff = 120; // 2 minutes
-        FDMatcher.fillInvalidTimes(fdEntriesNoGaps, diff);
-
-        // Convert in XFD entries
-        return fdEntriesNoGaps.stream().map(fdEntry ->
-                new XFDEntry(fdEntry, taxiId) // with trajectory id
-        ).collect(Collectors.toList());
+    /**
+     * Enum created for optimize pre processing data
+     * */
+    protected enum TYPE_ENTRY {
+        GPX, XFD
     }
 
-    public List<GPXEntry> preProcessing(List<GPXEntry> gpxEntries) {
-        List<GPXEntry> newEntries = new ArrayList<>();
-        int tam = gpxEntries.size();
+    /**
+     * @param gpxEntries will be processed for then be use for GraphHopper/MapMatching that at the moment doesn't have timestamps
+     * @return List<XFDEntry> with gaps filled
+     * */
+    public List<XFDEntry> matchingEntries(List<GPXEntry> gpxEntries, long taxiId) {
+        HashMap<TYPE_ENTRY, List<?>> preProcessed = preProcessing(gpxEntries, taxiId);
+        List<GPXEntry> gpx = (List<GPXEntry>) preProcessed.get(TYPE_ENTRY.GPX);
+        List<XFDEntry> xfd = (List<XFDEntry>) preProcessed.get(TYPE_ENTRY.XFD);
+
+        List<XFDEntry> ghMatched = mapMatching.doMapMatching(gpx, taxiId);
+
+        // Rematch FD entries
+        List<XFDEntry> fdMatch = FDMatcher.doFCDMatching(xfd, ghMatched);
+
+        return FDMatcher.fillGaps(fdMatch);
+    }
+
+
+    /**
+     * @return HashMap<TYPE_ENTRY.GPX, List<GPXEntry>> gpxEntriesPreProcessed
+     * @return HashMap<TYPE_ENTRY.XFD, List<XFDEntry>> xfdEntriesPreProcessed
+     *
+     * Return the same data but with different formats
+    * */
+    protected HashMap<TYPE_ENTRY, List<?>> preProcessing(List<GPXEntry> unprocessed, Long tid) {
+        List<GPXEntry> gpxEntries = new ArrayList<>();
+        List<XFDEntry> xfdEntries = new ArrayList<>();
+
+        HashMap<TYPE_ENTRY, List<?>> result = new HashMap<>();
+        result.put(TYPE_ENTRY.GPX, gpxEntries);
+        result.put(TYPE_ENTRY.XFD, xfdEntries);
+
         double dist, distanceLimit = 20000; // Using 120km/h in 10min -> 20km
+        int tam = unprocessed.size();
 
         // Doesn't have the amount of data needed
         if (tam <= 2)
-            return new ArrayList<>();
+            return result;
 
-        newEntries.add(gpxEntries.get(0));
+        gpxEntries.add(unprocessed.get(0));
+        xfdEntries.add(new XFDEntry(unprocessed.get(0), tid));
 
         for (int i = 1; i < tam; i++) {
-            dist = Calc.calcDist(gpxEntries.get(i - 1), gpxEntries.get(i));
+            dist = Calc.calcDist(unprocessed.get(i - 1), unprocessed.get(i));
 
-            if (dist > distanceLimit)
-                break;
+            if (dist > distanceLimit) break;
 
-            newEntries.add(gpxEntries.get(i));
+            gpxEntries.add(unprocessed.get(i));
+            xfdEntries.add(new XFDEntry(unprocessed.get(i), tid));
         }
 
-        return newEntries;
+        return result;
     }
 
 }
