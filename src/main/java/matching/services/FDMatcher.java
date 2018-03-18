@@ -1,9 +1,9 @@
-package matching.services;
+package main.java.matching.services;
 
 import com.graphhopper.util.DistanceCalc;
 import com.graphhopper.util.DistancePlaneProjection;
-import matching.models.XFDEntry;
-import matching.utils.Calc;
+import main.java.matching.models.XFDEntry;
+import main.java.matching.utils.Calc;
 
 import java.util.ArrayList;
 import java.util.List;

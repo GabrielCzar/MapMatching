@@ -1,4 +1,4 @@
-package matching.database;
+package main.java.matching.database;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
@@ -22,12 +22,6 @@ public class ConnectionFactory {
         if (connection == null || connection.isClosed()) {
             Properties properties = new Properties();
             properties.load(ConnectionFactory.class.getClassLoader().getResourceAsStream(CONFIG));
-
-//            Class.forName(properties.getProperty(STR_DRIVER));
-//            String host = properties.getProperty(STR_HOST);
-//            String user = properties.getProperty(STR_USER);
-//            String pass = properties.getProperty(STR_PASS);
-//            connection = DriverManager.getConnection(host, user, pass);
 
             ComboPooledDataSource pool = new ComboPooledDataSource();
             pool.setDriverClass(properties.getProperty(STR_DRIVER));

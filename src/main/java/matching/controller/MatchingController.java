@@ -1,10 +1,10 @@
-package matching.controller;
+package main.java.matching.controller;
 
 import com.graphhopper.util.GPXEntry;
-import matching.models.XFDEntry;
-import matching.services.FDMatcher;
-import matching.services.GraphHopperMapMatching;
-import matching.utils.Calc;
+import main.java.matching.models.XFDEntry;
+import main.java.matching.services.FDMatcher;
+import main.java.matching.services.GraphHopperMapMatching;
+import main.java.matching.utils.Calc;
 
 import java.util.ArrayList;
 import java.util.HashMap;

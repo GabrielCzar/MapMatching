@@ -1,9 +1,9 @@
-package matching.database;
+package main.java.matching.database;
 
 import com.graphhopper.util.GPXEntry;
 import com.graphhopper.util.shapes.GHPoint;
-import matching.App;
-import matching.models.XFDEntry;
+import main.java.matching.App;
+import main.java.matching.models.XFDEntry;
 
 import java.beans.PropertyVetoException;
 import java.io.IOException;

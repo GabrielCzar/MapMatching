@@ -1,4 +1,4 @@
-package matching.services;
+package main.java.matching.services;
 
 import com.graphhopper.GraphHopper;
 import com.graphhopper.matching.MapMatching;
@@ -13,7 +13,7 @@ import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.util.EdgeIteratorState;
 import com.graphhopper.util.GPXEntry;
 import com.graphhopper.util.Parameters;
-import matching.models.XFDEntry;
+import main.java.matching.models.XFDEntry;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

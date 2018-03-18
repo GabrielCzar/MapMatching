@@ -1,13 +1,12 @@
-package matching;
+package main.java.matching;
 
 import com.graphhopper.util.GPXEntry;
-import matching.controller.MatchingController;
-import matching.database.DataRepository;
-import matching.models.XFDEntry;
+import main.java.matching.controller.MatchingController;
+import main.java.matching.database.DataRepository;
+import main.java.matching.models.XFDEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +50,7 @@ public class App {
                 e.printStackTrace();
             }
         }
+
         logger.info("Matching Finish.");
 
 //        // Convert in GPX entries

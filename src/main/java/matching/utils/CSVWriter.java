@@ -1,6 +1,6 @@
-package matching.utils;
+package main.java.matching.utils;
 
-import matching.models.XFDEntry;
+import main.java.matching.models.XFDEntry;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

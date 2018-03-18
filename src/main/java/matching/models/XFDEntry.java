@@ -1,4 +1,4 @@
-package matching.models;
+package main.java.matching.models;
 
 import com.graphhopper.util.GPXEntry;
 import com.vividsolutions.jts.geom.Coordinate;

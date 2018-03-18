@@ -1,4 +1,4 @@
-package matching.utils;
+package main.java.matching.utils;
 
 import com.graphhopper.util.DistanceCalc;
 import com.graphhopper.util.DistancePlaneProjection;
