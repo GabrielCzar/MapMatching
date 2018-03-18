@@ -5,13 +5,12 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
 public class ConnectionFactory {
     private static Connection connection = null;
-    private static final String CONFIG = "configuration.properties";
+    private static final String CONFIG = "config.properties";
     private static final String STR_DRIVER = "driver";
     private static final String STR_HOST = "host";
     private static final String STR_USER = "user";

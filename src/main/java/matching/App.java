@@ -13,16 +13,12 @@ import java.util.List;
 import java.util.Map;
 
 public class App {
-    private static final String
-            TABLE = "taxi_data",
-            filename = "fcd-entries.csv";
+    private static final String TABLE = "taxi_data";
     private static final String
             OSM_FILE_PATH = "Beijing.osm.pbf",
             GHLOCATION = "graphopper-beijing";
 
-    public static final Logger logger =
-            LoggerFactory.getLogger(App.class);
-
+    public static final Logger logger = LoggerFactory.getLogger(App.class);
 
     // Error Tax 6% with 50 taxis
     //
@@ -55,11 +51,16 @@ public class App {
                 e.printStackTrace();
             }
         }
-        logger.info("Matching Finish.\nSave result in db.");
+        logger.info("Matching Finish.");
+
+//        // Convert in GPX entries
+//        @SuppressWarnings("unchecked")
+//        List<GPXEntry> entryList = (List<GPXEntry>) (List<? extends GPXEntry>) matchingEntries;
 
         repository.saveXFDEntries(matchingEntries);
+        logger.info("Save in db.");
 
-        logger.info("FINISH");
+        logger.info("Finish.");
     }
 
 }

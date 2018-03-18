@@ -161,7 +161,6 @@ public class FDMatcher {
      * Only in the first and/or last value
      * */
     private static void fillFirstAndLastInvalidTimestamps(List<XFDEntry> values) {
-        long time1, time2;
         int tam = values.size();
 
         // first value

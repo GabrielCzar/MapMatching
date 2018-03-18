@@ -14,8 +14,7 @@ import java.util.*;
 import java.util.Date;
 
 public class DataRepository {
-    private Connection connection = null;
-
+    private Integer batchSize = 1000;
     /**
      * Get all positions of the all taxis in determinate day
      *
@@ -23,6 +22,7 @@ public class DataRepository {
      * @return Map<Integer, List<GPXEntry> has taxi Id as key and all positions
      * */
     public Map<Integer, List<GPXEntry>> getAllEntries(String tableName) {
+        Connection connection = null;
         String query = " select taxi_id, date_time, longitude, latitude from " + tableName
                 + " WHERE date_time::date >= DATE '2008-02-02' AND date_time::date < DATE '2008-02-03' "
                 + " order by date_time ";
@@ -66,10 +66,9 @@ public class DataRepository {
     public void saveXFDEntries (List<XFDEntry> entries) {
         Connection connection = null;
         PreparedStatement stmt = null;
-        Integer batchSize = 1000;
 
         String query = "insert into matched_tracks (tid,latitude,longitude,datetime,edge_id,geom) " +
-                "values (?,?,?,?,?,ST_SetSRID(ST_MakePoint(?, ?), 4326));";
+                       "values (?,?,?,?,?,ST_SetSRID(ST_MakePoint(?, ?), 4326));";
 
         try {
             connection = ConnectionFactory.getConnection();
@@ -99,7 +98,9 @@ public class DataRepository {
         } catch (SQLException | IOException | PropertyVetoException e) {
             App.logger.error("Timestamp invalid!", e);
             try {
-                stmt.clearBatch();
+                if (stmt != null) {
+                    stmt.clearBatch();
+                }
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }
@@ -117,68 +118,5 @@ public class DataRepository {
         }
         return new Timestamp(parsedDate.getTime());
     }
-
-
-//    public void createTableXFCDEntries() {
-//        Connection connection = null;
-//        try {
-//            connection = ConnectionFactory.getConnection();
-//        } catch (ClassNotFoundException | SQLException | IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        Statement createSeq = null;
-//        Statement createTable = null;
-//
-//        try {
-//            // first create a sequence for the new table
-//            createSeq = connection.createStatement();
-//            createSeq.executeUpdate("CREATE SEQUENCE matched_tracks_seq");
-//            System.out.println("Sequence 'matched_tracks_seq' successfully created.");
-//        } catch (SQLException e) {
-//            System.out.println("Sequence 'matched_tracks_seq' already exists.");
-//        }
-//
-//        try {
-//            // now create the new table
-//            createTable = connection.createStatement();
-//            StringBuilder table = new StringBuilder()
-//                    .append("CREATE TABLE matched_tracks (")
-//                    //tid,latitude,longitude,date_time,edge_id,geometry,offset,gid
-//                    .append("tid INT,")
-//                    .append("latitude DOUBLE PRECISION,")
-//                    .append("longitude DOUBLE PRECISION,")
-//                    .append("datetime TIMESTAMP WITHOUT TIME ZONE,")
-//                    .append("edge_id BIGINT,")
-//                    .append("geom GEOMETRY(Point,4326),")
-//                    .append("_offset DOUBLE PRECISION,")
-//                    .append("gid INT PRIMARY KEY")
-//                    .append(");");
-//            createTable.executeUpdate(table.toString());
-//            System.out.println("Table 'matched_tracks' successfully created.");
-//        } catch (SQLException e) {
-//            System.out.println("Table 'matched_tracks' already exists.");
-//        }
-//
-//        finally {
-//            // closing statements
-//            if (createSeq != null) {
-//                try {
-//                    createSeq.close();
-//                } catch (SQLException e) {
-//                    //;
-//                }
-//                createSeq = null;
-//            }
-//            if (createTable != null) {
-//                try {
-//                    createTable.close();
-//                } catch (SQLException e) {
-//                    //;
-//                }
-//                createTable = null;
-//            }
-//        }
-//    }
 
 }
