@@ -24,7 +24,7 @@ public class DataRepository {
     public Map<Integer, List<GPXEntry>> getAllEntries(String tableName) {
         Connection connection = null;
         String query = " select taxi_id, date_time, longitude, latitude from " + tableName
-                + " WHERE date_time::date >= DATE '2008-02-02' AND date_time::date < DATE '2008-02-03' "
+                + " WHERE date_time::date >= DATE '2008-02-03' AND date_time::date < DATE '2008-02-04' "
                 + " order by date_time ";
         Map<Integer, List<GPXEntry>> trajectories = new HashMap<>();
 

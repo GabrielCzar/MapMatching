@@ -31,8 +31,8 @@ public class ConnectionFactory {
 
             pool.setMinPoolSize(3);
             pool.setAcquireIncrement(5);
-            pool.setMaxPoolSize(10);
-            pool.setCheckoutTimeout(300);
+            pool.setMaxPoolSize(20);
+            pool.setCheckoutTimeout(500);
             pool.setMaxStatements(50);
 
             return pool.getConnection();

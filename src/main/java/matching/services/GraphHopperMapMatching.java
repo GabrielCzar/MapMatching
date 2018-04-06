@@ -13,6 +13,7 @@ import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.util.EdgeIteratorState;
 import com.graphhopper.util.GPXEntry;
 import com.graphhopper.util.Parameters;
+import main.java.matching.App;
 import main.java.matching.models.XFDEntry;
 
 import java.math.BigInteger;
@@ -62,6 +63,10 @@ public class GraphHopperMapMatching {
         Path path = mapMatching.calcPath(mr);
 
         List<EdgeIteratorState> edges = path.calcEdges();
+//
+//        App.logger.info("EDGES >> " + edges.size());
+//        App.logger.info("VERTICES >> " + path.calcPoints().size());
+
         edges.forEach(edge ->
                 // 2 don't include towers node
                 edge.fetchWayGeometry(2).forEach(point ->

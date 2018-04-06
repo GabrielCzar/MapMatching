@@ -14,14 +14,14 @@
     </properties>
 
     <dependencies>
-        <!-- DATABASE ACCESS-->
+        <!-- DATABASE -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.1.4</version>
         </dependency>
 
-        <!-- GRAPH HOPPER -->
+        <!-- GRAPH HOPPER MAP MATCHING -->
         <dependency>
             <groupId>com.graphhopper</groupId>
             <artifactId>graphhopper-map-matching-core</artifactId>
@@ -38,21 +38,21 @@
             </exclusions>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.graphhopper/graphhopper-reader-osm -->
+        <!-- GRAPH HOPPER OSM -->
         <dependency>
             <groupId>com.graphhopper</groupId>
             <artifactId>graphhopper-reader-osm</artifactId>
             <version>0.10.alpha3</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+        <!-- LOGGER -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
             <version>1.2.3</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/c3p0/c3p0 -->
+        <!-- CONNECTION POOL -->
         <dependency>
             <groupId>com.mchange</groupId>
             <artifactId>c3p0</artifactId>
