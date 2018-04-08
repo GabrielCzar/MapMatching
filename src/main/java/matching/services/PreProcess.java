@@ -1,6 +1,10 @@
 package main.java.matching.services;
 
 import com.graphhopper.util.GPXEntry;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 import main.java.matching.App;
 import main.java.matching.models.XFDEntry;
 import main.java.matching.utils.Calc;
@@ -105,6 +109,18 @@ public class PreProcess {
             }
 
         }
+
+        return result;
+    }
+
+    private GeometryFactory geoFactory = new GeometryFactory();
+
+    public List<GPXEntry> preprocessByOSMLimit(List<GPXEntry> entries, Polygon polygon) {
+        List<GPXEntry> result = new ArrayList<>();
+
+        for (GPXEntry entry: entries)
+            if (Calc.convertGpxToPoint(entry).within(polygon))
+                result.add(entry);
 
         return result;
     }
