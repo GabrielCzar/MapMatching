@@ -1,6 +1,7 @@
 package main.java.matching.controller;
 
 import com.graphhopper.util.GPXEntry;
+import main.java.matching.App;
 import main.java.matching.models.XFDEntry;
 import main.java.matching.services.FDMatcher;
 import main.java.matching.services.GraphHopperMapMatching;
@@ -14,7 +15,7 @@ public class MatchingController {
     private GraphHopperMapMatching mapMatching;
 
     public MatchingController(String osmFilePath, String ghLocation) {
-	mapMatching = new GraphHopperMapMatching(osmFilePath, ghLocation);
+	    mapMatching = new GraphHopperMapMatching(osmFilePath, ghLocation);
     }
 
     /**
@@ -24,8 +25,11 @@ public class MatchingController {
     public List<XFDEntry> matchingEntries(List<GPXEntry> gpxEntries, long taxiId) {
         PreProcess pp = new PreProcess();
         HashMap<PreProcess.TYPE_ENTRY, List<?>> preProcessed = pp.preProcessBySpeed(gpxEntries, taxiId);
+
         List<GPXEntry> gpx = (List<GPXEntry>) preProcessed.get(PreProcess.TYPE_ENTRY.GPX);
         List<XFDEntry> xfd = (List<XFDEntry>) preProcessed.get(PreProcess.TYPE_ENTRY.XFD);
+
+        App.logger.info("preprocessed >> " + gpx.size());
 
         List<XFDEntry> ghMatched = mapMatching.doMapMatching(gpx, taxiId);
 

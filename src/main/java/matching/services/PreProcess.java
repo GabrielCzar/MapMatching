@@ -1,11 +1,8 @@
 package main.java.matching.services;
 
 import com.graphhopper.util.GPXEntry;
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
-import main.java.matching.App;
 import main.java.matching.models.XFDEntry;
 import main.java.matching.utils.Calc;
 
@@ -58,8 +55,6 @@ public class PreProcess {
 
         for (int i = init + 1; i < tam; i++) {
             dist = Calc.calcDist(unprocessed.get(i - 1), unprocessed.get(i));
-
-            App.logger.info("" + dist);
 
             if (dist > distanceLimit) break;
 

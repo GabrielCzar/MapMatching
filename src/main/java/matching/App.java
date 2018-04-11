@@ -23,7 +23,7 @@ public class App {
 
     public static final Logger logger = LoggerFactory.getLogger(App.class);
 
-    // Error Tax 6% with 50 taxis
+    // Error Tax 8% with 50 taxis
     //
     public static void main(String[] args) {
         logger.info("Init Map Matching");
@@ -62,6 +62,8 @@ public class App {
         }
 
         logger.info("Matching Finish.");
+
+        logger.info("Entries matching >> " + matchingEntries.size());
 
 //        // Convert in GPX entries
 //        @SuppressWarnings("unchecked")

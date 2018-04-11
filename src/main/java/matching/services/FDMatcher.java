@@ -20,6 +20,8 @@ public class FDMatcher {
     //private static final Logger logger = LoggerFactory.getLogger(App.class);
 
     public static List<XFDEntry> doFCDMatching(List<XFDEntry> fcdUnmatched, List<XFDEntry> fcdMatched) {
+        fillFirstAndLastInvalidTimestamps(fcdUnmatched, fcdMatched);
+
         // init list for query nodes (outer loop)
         ConcurrentSkipListSet<Integer> queryNodes = new ConcurrentSkipListSet<>();
         // init and fill hash map for matching candidates per inner node (inner loop)
@@ -160,33 +162,19 @@ public class FDMatcher {
      * If exists invalid times or negative timestamps, they are to be replaced for next valid value
      * Only in the first and/or last value
      * */
-    private static void fillFirstAndLastInvalidTimestamps(List<XFDEntry> values) {
-        int tam = values.size();
-
+    private static void fillFirstAndLastInvalidTimestamps(List<XFDEntry> unmatched, List<XFDEntry> matched) {
         // first value
-        if (values.get(0).getTime() <= 0) {
-            for (int i = 1; i < tam; i++) {
-                if (values.get(i).getTime() > 0) {
-                    values.get(0).setTime(values.get(i).getTime());
-                    break;
-                }
-            }
-        }
+        if (matched.get(0).getTime() <= 0)
+            matched.get(0).setTime(unmatched.get(0).getTime());
 
+        int tamMatched = matched.size();
+        int tamUnmatched = unmatched.size();
         // last value
-        if (values.get(tam - 1).getTime() <= 0){
-            for (int i = tam - 2; i >= 0; i--) {
-                if (values.get(i).getTime() > 0) {
-                    values.get(tam - 1).setTime(values.get(i).getTime());
-                    break;
-                }
-            }
-        }
+        if (matched.get(tamMatched - 1).getTime() <= 0)
+            matched.get(tamMatched - 1).setTime(unmatched.get(tamUnmatched - 1).getTime());
     }
 
     public static List<XFDEntry> fillGaps(List<XFDEntry> fcdWithGaps) {
-        fillFirstAndLastInvalidTimestamps(fcdWithGaps);
-
         List<XFDEntry> fcdWithoutGaps = new ArrayList<>();
         List<XFDEntry> gap = new ArrayList<>();
 
