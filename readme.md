@@ -1,7 +1,32 @@
 # Map Matching
+[![](https://jitpack.io/v/GabrielCzar/mapmatching.svg)](https://jitpack.io/#GabrielCzar/mapmatching)
 
-## Using docker postgres for data
+#### ADICIONANDO A DEPENDÊNCIA:  
+Para disponibilização da biblioteca será utilizada a plataforma Jitpack, que compartilha a versão mais atualizada do repositório.
+	
+- No arquivo ```build.gradle``` adicione a dependência do jitpack:
+	
+```gradle
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	}
+}
+```
 
+- No arquivo ```app/build.gradle``` adicione a dependência da API:
+
+```gradle
+dependencies {
+	compile 'com.github.gabrielczar:mapmatching:1.2.0'
+}
+```
+<details>
+ <summary><h2>
+  Using Docker Conteiner Postgres
+ </summary></h2>
+ 
 - Criar local para armazenar dados
 
 ```docker volume create pg_data```
@@ -10,8 +35,12 @@
 ```shell
 docker run --name=trajectory-data-postgis -d -e POSTGRES_USER=postgres -e POSTGRES_PASS=postgres -e POSTGRES_DBNAME=trajectory-data -e ALLOW_IP_RANGE=0.0.0.0/0 -p 5432:5432 -v pg_data:/var/lib/postgresql --restart=always kartoza/postgis:9.6-2.4
 ```
+</details>
 
-## Extra Queries
+<details>
+ <summary><h2>
+  Extra Queries
+ </summary></h2>
 
 - Add column for geometry
 ```sql
@@ -48,3 +77,4 @@ WHERE t.id = taxi_data.id;
 ```sql
 SELECT * FROM taxi_data WHERE date_time::date >= date '2008-02-02' AND date_time::date < date '2008-02-03';
 ``` 
+</details>
