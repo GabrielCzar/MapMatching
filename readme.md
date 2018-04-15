@@ -24,7 +24,7 @@ dependencies {
 ```
 <details>
  <summary><h2>
-  Using Docker Conteiner Postgres
+  Using Docker Container Postgres
  </summary></h2>
  
 - Criar local para armazenar dados
