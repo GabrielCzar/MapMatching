@@ -4,23 +4,25 @@
 #### ADICIONANDO A DEPENDÊNCIA:  
 Para disponibilização da biblioteca será utilizada a plataforma Jitpack, que compartilha a versão mais atualizada do repositório.
 	
-- No arquivo ```build.gradle``` adicione a dependência do jitpack:
+- Add the repository in ```pom.xml```:
 	
-```gradle
-allprojects {
-	repositories {
-		...
-		maven { url 'https://jitpack.io' }
-	}
-}
+```xml
+<repositories>
+  <repository>
+  <id>jitpack.io</id>
+  <url>https://jitpack.io</url>
+  </repository>
+</repositories>
 ```
 
-- No arquivo ```app/build.gradle``` adicione a dependência da API:
+- Add the dependency in ```pom.xml```:
 
-```gradle
-dependencies {
-	compile 'com.github.gabrielczar:mapmatching:1.2.0'
-}
+```xml
+<dependency>
+    <groupId>com.github.GabrielCzar</groupId>
+    <artifactId>MapMatching</artifactId>
+    <version>1.2.0</version>
+</dependency>
 ```
 <details>
  <summary><h2>
