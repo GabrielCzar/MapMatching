@@ -9,8 +9,5 @@
         <module name="map-matching" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="map-matching" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

@@ -34,6 +34,15 @@ public class App {
 
         List<XFDEntry> matchingEntries = new ArrayList<>();
 
+//        GeometryFactory geometry = new GeometryFactory();
+//
+//        Coordinate[] coordinates = new Coordinate[] {
+//                new Coordinate(39.08, 116.08),
+//                new Coordinate(40.08, 116.77)
+//        };
+//
+//        Polygon polygon = geometry.createPolygon(geometry.createLinearRing(coordinates));
+
         Polygon polygon = PolyReader.readLimitsOSM(OSM_POLY);
 
         MatchingController controller = new MatchingController(OSM_FILE_PATH, GHLOCATION);
