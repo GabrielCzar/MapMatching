@@ -3,7 +3,7 @@ package test.java.matching;
 import com.graphhopper.util.GPXEntry;
 import com.vividsolutions.jts.geom.Polygon;
 import main.java.matching.App;
-import main.java.matching.controller.MatchingController;
+import main.java.matching.controller.MatchingService;
 import main.java.matching.database.DataRepository;
 import main.java.matching.models.XFDEntry;
 import main.java.matching.services.PreProcess;
@@ -28,7 +28,9 @@ public class Test {
 
         Map<Integer, List<GPXEntry>> gpxEntries = repository.getAllEntries(TABLE);
 
-        MatchingController controller = new MatchingController(OSM_FILE_PATH, GHLOCATION);
+        MatchingService service = new MatchingService();
+
+        service.configMatching(OSM_FILE_PATH, GHLOCATION);
 
         List<XFDEntry> matchingEntries = new ArrayList<>();
 
@@ -47,7 +49,7 @@ public class Test {
         App.logger.info("osm_limit >> " + gpxPreprocessed.size());
 
         try {
-            List<XFDEntry> xfdEntries = controller.matchingEntries(gpxPreprocessed, entry);
+            List<XFDEntry> xfdEntries = service.matchingEntries(gpxPreprocessed, entry);
 
             if (xfdEntries.size() > 0) {
 

@@ -1,12 +1,14 @@
 package main.java.matching;
 
 import com.graphhopper.util.GPXEntry;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
-import main.java.matching.controller.MatchingController;
+import com.vividsolutions.jts.geom.PrecisionModel;
+import main.java.matching.controller.MatchingService;
 import main.java.matching.database.DataRepository;
 import main.java.matching.models.XFDEntry;
 import main.java.matching.services.PreProcess;
-import main.java.matching.utils.PolyReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,18 +36,33 @@ public class App {
 
         List<XFDEntry> matchingEntries = new ArrayList<>();
 
-//        GeometryFactory geometry = new GeometryFactory();
-//
-//        Coordinate[] coordinates = new Coordinate[] {
-//                new Coordinate(39.08, 116.08),
-//                new Coordinate(40.08, 116.77)
-//        };
-//
-//        Polygon polygon = geometry.createPolygon(geometry.createLinearRing(coordinates));
+        GeometryFactory geometry = new GeometryFactory(new PrecisionModel(), 4326);
 
-        Polygon polygon = PolyReader.readLimitsOSM(OSM_POLY);
+        // Create polygon manually
 
-        MatchingController controller = new MatchingController(OSM_FILE_PATH, GHLOCATION);
+        // initial lon lat
+        // final lon | initial lat
+        // final lon lat
+        // initial lon | final lat
+        // initial lon lat
+
+        Coordinate[] coordinates = new Coordinate[] {
+                new Coordinate(116.08, 39.68),
+                new Coordinate(116.77, 39.68),
+                new Coordinate(116.77, 40.18),
+                new Coordinate(116.08, 40.18),
+                new Coordinate(116.08, 39.68)
+        };
+
+        Polygon polygon = geometry.createPolygon(coordinates);
+
+        // Create polygon by OSM_POLY file
+
+        // Polygon polygon = PolyReader.readLimitsOSM(OSM_POLY);
+
+        MatchingService service = new MatchingService();
+
+        service.configMatching(OSM_FILE_PATH, GHLOCATION);
 
         Map<Integer, List<GPXEntry>> gpxEntries = repository.getAllEntries(TABLE);
 
@@ -56,7 +73,7 @@ public class App {
             List<GPXEntry> gpxUnmatchedClean = preProcess.preprocessByOSMLimit(gpxUnmatched, polygon);
 
             try {
-                List<XFDEntry> xfdEntries = controller.matchingEntries(gpxUnmatchedClean, entry);
+                List<XFDEntry> xfdEntries = service.matchingEntries(gpxUnmatchedClean, entry);
 
                 if (xfdEntries.size() > 0) {
                     matchingEntries.addAll(xfdEntries);
@@ -73,10 +90,6 @@ public class App {
         logger.info("Matching Finish.");
 
         logger.info("Entries matching >> " + matchingEntries.size());
-
-//        // Convert in GPX entries
-//        @SuppressWarnings("unchecked")
-//        List<GPXEntry> entryList = (List<GPXEntry>) (List<? extends GPXEntry>) matchingEntries;
 
         repository.saveXFDEntries(matchingEntries);
 

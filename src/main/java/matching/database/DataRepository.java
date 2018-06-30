@@ -67,7 +67,7 @@ public class DataRepository {
         Connection connection = null;
         PreparedStatement stmt = null;
 
-        String query = "insert into matched_tracks (tid,latitude,longitude,datetime,edge_id,geom) " +
+        String query = "insert into matched_tracks (tid,latitude,longitude,date_time,edge_id,geom) " +
                        "values (?,?,?,?,?,ST_SetSRID(ST_MakePoint(?, ?), 4326));";
 
         try {
