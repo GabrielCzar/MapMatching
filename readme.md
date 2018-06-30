@@ -1,5 +1,5 @@
 # Map Matching
-[![](https://jitpack.io/v/GabrielCzar/mapmatching.svg)](https://jitpack.io/#GabrielCzar/mapmatching)
+[![](https://jitpack.io/v/GabrielCzar/MapMatching.svg)](https://jitpack.io/#GabrielCzar/MapMatching)
 
 #### ADICIONANDO A DEPENDÊNCIA:  
 Para disponibilização da biblioteca será utilizada a plataforma Jitpack, que compartilha a versão mais atualizada do repositório.
@@ -19,9 +19,9 @@ Para disponibilização da biblioteca será utilizada a plataforma Jitpack, que 
 
 ```xml
 <dependency>
-    <groupId>com.github.GabrielCzar</groupId>
+    <groupId>com.github.gabrielczar</groupId>
     <artifactId>MapMatching</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 <details>
