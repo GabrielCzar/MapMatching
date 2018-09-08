@@ -2,7 +2,7 @@
 [![](https://jitpack.io/v/GabrielCzar/MapMatching.svg)](https://jitpack.io/#GabrielCzar/MapMatching)
 
 #### ADICIONANDO A DEPENDÊNCIA:  
-Para disponibilização da biblioteca será utilizada a plataforma Jitpack, que compartilha a versão mais atualizada do repositório.
+To make a library available, a Jitpack platform will be used, which shares a more original version of the repository.
 	
 - Add the repository in ```pom.xml```:
 	
@@ -29,11 +29,11 @@ Para disponibilização da biblioteca será utilizada a plataforma Jitpack, que 
   Using Docker Container Postgres
  </summary></h2>
  
-- Criar local para armazenar dados
+- Create local to save postgres data
 
 ```docker volume create pg_data```
 
-- Criar instancia do postgis
+- Create instance posgres with postgis extension
 ```shell
 docker run --name=trajectory-data-postgis -d -e POSTGRES_USER=postgres -e POSTGRES_PASS=postgres -e POSTGRES_DBNAME=trajectory-data -e ALLOW_IP_RANGE=0.0.0.0/0 -p 5432:5432 -v pg_data:/var/lib/postgresql --restart=always kartoza/postgis:9.6-2.4
 ```
@@ -44,39 +44,62 @@ docker run --name=trajectory-data-postgis -d -e POSTGRES_USER=postgres -e POSTGR
   Extra Queries
  </summary></h2>
 
-- Add column for geometry
+#### Create table 
+
+- Create table to save output
 ```sql
-alter table taxi_data add column geom geometry;
+CREATE TABLE matched_points (
+	id serial primary key,
+	natural_id integer, 
+ 	datetime timestamp,
+ 	longitude double precision,
+ 	latitude double precision,
+	edge_id bigint,
+	offset double precision,
+	geometry point
+);
 ```
 
-- Create table with taxis inside the osm
+- Create table with content
 ```sql
-create table taxi_data_osm (
+CREATE TABLE dataset (
  id serial primary key,  
- taxi_id integer, 
+ natural_id integer, 
  datetime timestamp,
  longitude double precision,
  latitude double precision
 );
 ```
-- Add column for id in taxi_data
+
+#### Aditional columns
+
+- Add column for geometry
 ```sql
-alter table taxi_data add column id serial primary key;
+ALTER TABLE dataset ADD COLUMN geom GEOMETRY;
 ```
 
-- Create geometrys for cada taxi position
+- Add aditional column for serial id in dataset
 ```sql
-update taxi_data
+ALTER TABLE dataset ADD COLUMN ID SERIAL PRIMARY KEY;
+```
+
+#### Aditional update values 
+
+- Create geometrys for each dataset location
+```sql
+update dataset
 set geom = ST_SetSRID(ST_MakePoint(t.long, t.lat), 4326)
 from (
        select id, longitude as long, 
-         latitude as lat from taxi_data) as t
-WHERE t.id = taxi_data.id;
-
+         latitude as lat from dataset) as t
+WHERE t.id = dataset.id;
 ```
+
+#### Aditional queries
 
 - Search by date interval
 ```sql
-SELECT * FROM taxi_data WHERE date_time::date >= date '2008-02-02' AND date_time::date < date '2008-02-03';
+SELECT * FROM dataset WHERE date_time::date >= date '2008-02-02' AND date_time::date < date '2008-02-03';
 ``` 
+
 </details>
